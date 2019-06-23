@@ -19,7 +19,7 @@ namespace Models.Config
 
                 return _tokenMap ?? (
                    _tokenMap = Tokens
-                       .Split(new[] {";"}, StringSplitOptions.RemoveEmptyEntries)
+                       .Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries)
                        .Select(x => x.Split(new[] {":"}, StringSplitOptions.None))
                        .ToDictionary(x => x[0], x => x[1])
                 );

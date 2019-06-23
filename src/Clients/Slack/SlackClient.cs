@@ -17,6 +17,11 @@ namespace Clients.Slack
         public string Channel { get; set; }
     }
 
+    public class SlackResponse
+    {
+        public bool Ok { get; set; }
+    }
+
     public class SlackClient
     {
         private readonly HttpClient _httpClient;
@@ -31,17 +36,21 @@ namespace Clients.Slack
 
         public async Task PostOnChannelAsync(string teamDomain, string channelId, string message, CancellationToken cancellationToken)
         {
-            var token = _slackConfig.TokenMap[teamDomain];
+            var token = _slackConfig.TokenMap[$"{teamDomain}_bot"];
             var response = await PostAsJsonAsync<Object>("/api/chat.postMessage", new SlackPostToChannelRequest
             {
-                Token = token,
                 Channel = channelId,
                 Text = message
-            }, cancellationToken);
+            }, cancellationToken,new Dictionary<string, string>
+            {
+                {"Authorization", $"Bearer {token}"}
+            });
 
             if (response.IsSuccessStatusCode)
             {
-                Console.WriteLine(await response.Content.ReadAsStringAsync());
+                var responseString = await response.Content.ReadAsStringAsync();
+                var slackResponse = GetObjectFromString<SlackResponse>(responseString);
+                Console.WriteLine();
             }
         }
         
@@ -85,9 +94,10 @@ namespace Clients.Slack
         private async Task<HttpResponseMessage> PostAsJsonAsync<TType>(
             string url,
             TType contentObject,
-            CancellationToken cancellationToken)
+            CancellationToken cancellationToken,
+            Dictionary<string, string> httpHeaders = null)
         {
-            return await SendAsStringAsync(HttpMethod.Post, url, cancellationToken, null, GetStringFromObject(contentObject));
+            return await SendAsStringAsync(HttpMethod.Post, url, cancellationToken, httpHeaders, GetStringFromObject(contentObject));
         }
         
         private string GetStringFromObject<TType>(TType contentObject)
@@ -95,6 +105,13 @@ namespace Clients.Slack
             JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings();
             jsonSerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             return JsonConvert.SerializeObject(contentObject, jsonSerializerSettings);
+        }
+        
+        private TType GetObjectFromString<TType>(string content)
+        {
+            JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings();
+            jsonSerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+            return JsonConvert.DeserializeObject<TType>(content, jsonSerializerSettings);
         }
     }
 }
