@@ -2,29 +2,33 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Api.Middleware;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
-    public class ListController : ControllerBase
+    public class ValuesController : ControllerBase
     {
-        // POST api/values
-        [HttpPost]
-        public void Post([FromBody]SlackRequest slackRequest)
+        // GET api/values
+        [HttpGet]
+        public ActionResult<IEnumerable<string>> Get()
         {
-            Console.WriteLine("test");
+            return new string[] { "value1", "value2" };
+        }
+
+        // GET api/values/5
+        [HttpGet("{id}")]
+        public ActionResult<string> Get(int id)
+        {
+            return "value";
         }
 
         // POST api/values
-//        [HttpPost]
-//        public void Post([FromBody]SlackRequest request)
-//        {
-//            Console.WriteLine(request.text);
-//        }
+        [HttpPost]
+        public void Post([FromBody] string value)
+        {
+        }
 
         // PUT api/values/5
         [HttpPut("{id}")]
