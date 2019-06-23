@@ -8,11 +8,10 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
-    <PackageReference Include="SlackAPI" Version="1.1.1" />
-    <PackageReference Include="SlackConnector" Version="4.2.74" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Clients\Clients.csproj" />
     <ProjectReference Include="..\Models\Models.csproj" />
   </ItemGroup>
 

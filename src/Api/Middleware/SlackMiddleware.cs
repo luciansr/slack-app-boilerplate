@@ -2,7 +2,9 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using Clients.Slack;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json.Linq;
 
@@ -25,9 +27,11 @@ namespace Api.Middleware
     public class SlackMiddleware
     {
         private readonly RequestDelegate _next;
+
         public SlackMiddleware(RequestDelegate next)
         {
             _next = next;
+//            _slackScopedClient = slackScopedClient;
         }
         
         public async Task Invoke(HttpContext httpContext)
@@ -36,10 +40,8 @@ namespace Api.Middleware
             var jsonRequest = JObject.FromObject(formDictionary);
             var request = jsonRequest.ToObject<SlackRequest>();
             var textCommand = request.text.Split(new[] {" "}, StringSplitOptions.RemoveEmptyEntries);
-            
-            
-            var newContent = string.Empty;
 
+//            await _slackScopedClient.SetTeam(request.team_domain, cancellationToken);
             // Store the "pre-modified" response stream.
             var existingBody = httpContext.Response.Body;
 

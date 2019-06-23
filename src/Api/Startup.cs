@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Api.Filters;
 using Api.Middleware;
+using Clients.Slack;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -15,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Models.Config;
+using SlackAPI;
 
 namespace Api
 {
@@ -34,8 +36,12 @@ namespace Api
             {
 //                options.Filters.Add<SlackFilter>();
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            
-            
+
+            services.AddScoped<SlackCustomClient>();
+            services.AddSingleton<SlackConnectedClient>();
+            services.AddScoped<SlackScopedClient>();
+            services.AddSingleton<SlackClient>();
+
             BindSectionToConfigObject<SlackConfig>(Configuration, services);
         }
         
