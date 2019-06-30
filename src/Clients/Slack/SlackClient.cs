@@ -36,7 +36,7 @@ namespace Clients.Slack
 
         public async Task PostOnChannelAsync(string teamDomain, string channelId, string message, CancellationToken cancellationToken)
         {
-            var token = _slackConfig.TokenMap[$"{teamDomain}_bot"];
+            var token = _slackConfig.SlackTokens[teamDomain].BotToken;
             var response = await PostAsJsonAsync<Object>("/api/chat.postMessage", new SlackPostToChannelRequest
             {
                 Channel = channelId,
