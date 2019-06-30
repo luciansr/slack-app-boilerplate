@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Api.Auth;
 using Api.Middleware;
 using Clients.Slack;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +13,12 @@ namespace Api.Controllers
 
     [Route("api/[controller]")]
     [ApiController]
+    [SlackAuthentication]
     public class ListController : ControllerBase
     {
         // POST api/values
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody]SlackRequest slackRequest, [FromServices]SlackClient slackClient, CancellationToken cancellationToken)
+        public async Task<IActionResult> Post([FromForm]SlackRequest slackRequest, [FromServices]SlackClient slackClient, CancellationToken cancellationToken)
         {
             Console.WriteLine("test");
             await slackClient.PostOnChannelAsync(slackRequest.team_domain, slackRequest.channel_id, "test message", cancellationToken);
