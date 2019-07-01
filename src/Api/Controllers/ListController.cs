@@ -14,7 +14,7 @@ namespace Api.Controllers
     // /[command] list
     [Route("api/[controller]")]
     [ApiController]
-//    [SlackAuthentication]
+    [SlackAuthentication]
     [SlackAuthorize(authorizedUsernames: new[] {"luciansr"})]
     public class ListController : ControllerBase
     {
