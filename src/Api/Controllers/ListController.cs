@@ -14,11 +14,13 @@ namespace Api.Controllers
     // /[command] list
     [Route("api/[controller]")]
     [ApiController]
-//    [SlackAuthentication]
+    [SlackAuthentication]
     public class ListController : ControllerBase
     {
         // /[command] list
         [HttpPost]
+        //catch all routes
+        [Route("{*.}")] 
         public async Task<IActionResult> Post([FromServices]SlackClient slackClient, [FromForm]SlackRequest slackRequest, CancellationToken cancellationToken)
         {
             await slackClient.PostOnChannelAsync(slackRequest.team_domain, slackRequest.channel_id, "command [list]", cancellationToken);

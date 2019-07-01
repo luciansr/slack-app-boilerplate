@@ -12,18 +12,17 @@ namespace Api.Controllers
 {
 
     // /[command] help
-    [Route("api/[controller]")]
+    //catch all routes
+    [Route("api/{*.}")]
     [ApiController]
     [SlackAuthentication]
-    public class HelpController : ControllerBase
+    public class CatchAllController : ControllerBase
     {
-        // /[command] help
+        // /[command] *
         [HttpPost]
-        //catch all routes
-        [Route("{*.}")]
         public async Task<IActionResult> Post([FromServices]SlackClient slackClient, [FromForm]SlackRequest slackRequest, CancellationToken cancellationToken)
         {
-            await slackClient.PostOnChannelAsync(slackRequest.team_domain, slackRequest.channel_id, "command [help]", cancellationToken);
+            await slackClient.PostOnChannelAsync(slackRequest.team_domain, slackRequest.channel_id, "command [not_found]", cancellationToken);
             return Ok();
         }
     }
