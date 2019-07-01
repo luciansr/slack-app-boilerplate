@@ -11,37 +11,27 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers
 {
 
+    // /[command] list
     [Route("api/[controller]")]
     [ApiController]
-    [SlackAuthentication]
+//    [SlackAuthentication]
     public class ListController : ControllerBase
     {
-        // POST api/values
+        // /[command] list
         [HttpPost]
-        public async Task<IActionResult> Post([FromForm]SlackRequest slackRequest, [FromServices]SlackClient slackClient, CancellationToken cancellationToken)
+        public async Task<IActionResult> Post([FromServices]SlackClient slackClient, [FromForm]SlackRequest slackRequest, CancellationToken cancellationToken)
         {
-            Console.WriteLine("test");
-            await slackClient.PostOnChannelAsync(slackRequest.team_domain, slackRequest.channel_id, "test message", cancellationToken);
+            await slackClient.PostOnChannelAsync(slackRequest.team_domain, slackRequest.channel_id, "command [list]", cancellationToken);
             return Ok();
         }
-
-        // POST api/values
-//        [HttpPost]
-//        public void Post([FromBody]SlackRequest request)
-//        {
-//            Console.WriteLine(request.text);
-//        }
-
-        // PUT api/values/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        
+        // /[command] list help [extra parameters from slack]
+        [HttpPost]
+        [Route("help")]
+        public async Task<IActionResult> Help([FromServices]SlackClient slackClient, [FromForm]SlackRequest slackRequest, [FromQuery]string extraParameters, CancellationToken cancellationToken)
         {
-        }
-
-        // DELETE api/values/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
+            await slackClient.PostOnChannelAsync(slackRequest.team_domain, slackRequest.channel_id, $"command [list help] parameters: [{extraParameters}]", cancellationToken);
+            return Ok();
         }
     }
 }
