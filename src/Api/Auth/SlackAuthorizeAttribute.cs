@@ -25,6 +25,7 @@ namespace Api.Auth
         public override void OnActionExecuting(ActionExecutingContext context)
         {
             var username = context.HttpContext.Request.Form["user_name"].FirstOrDefault();
+            var userId = context.HttpContext.Request.Form["user_id"].FirstOrDefault();
             var channelName = context.HttpContext.Request.Form["channel_name"].FirstOrDefault();
             
             if (_authorizedUsernames.Contains(username) || _authorizedChannels.Contains(channelName))
@@ -38,7 +39,7 @@ namespace Api.Auth
                 Content = JsonConvert.SerializeObject(new SlackResponse
                 {
                     ResponseType = SlackResponseType.Ephemeral,
-                    Text = "You are not authorized to do that action."
+                    Text = $"You are not authorized to do that action <@{userId}> [{username}]."
                 }),
                 StatusCode = 200
             };
