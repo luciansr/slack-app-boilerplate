@@ -3,9 +3,11 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Models.Config;
+using Newtonsoft.Json;
 
 namespace Api.Auth
 {
@@ -33,7 +35,11 @@ namespace Api.Auth
 
             context.Result = new ContentResult
             {
-                Content = "not_authorized",
+                Content = JsonConvert.SerializeObject(new SlackResponse
+                {
+                    ResponseType = SlackResponseType.Ephemeral,
+                    Text = "You are not authorized to do that action."
+                }),
                 StatusCode = 200
             };
         }

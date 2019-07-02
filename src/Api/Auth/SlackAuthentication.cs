@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Models.Config;
+using Newtonsoft.Json;
 
 namespace Api.Auth
 {
@@ -21,8 +22,11 @@ namespace Api.Auth
 
             context.Result = new ContentResult
             {
-                Content = "not_authorized",
-                StatusCode = 200
+                Content = JsonConvert.SerializeObject(new
+                {
+                    error = "Only messages from Slack are allowed!"
+                }),
+                StatusCode = 403
             };
         }
 

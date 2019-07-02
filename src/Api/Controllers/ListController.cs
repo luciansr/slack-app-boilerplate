@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Api.Auth;
 using Api.Middleware;
+using Api.Models;
 using Clients.Slack;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,7 +26,11 @@ namespace Api.Controllers
         public async Task<IActionResult> Post([FromServices]SlackClient slackClient, [FromForm]SlackRequest slackRequest, CancellationToken cancellationToken)
         {
             await slackClient.PostOnChannelAsync(slackRequest.team_domain, slackRequest.channel_id, "command [list]", cancellationToken);
-            return Ok();
+            return Ok(new SlackResponse
+            {
+                ResponseType = SlackResponseType.IsChannel,
+                Text = "teste"
+            });
         }
         
         // /[command] list help [extra parameters from slack]
@@ -34,7 +39,22 @@ namespace Api.Controllers
         public async Task<IActionResult> Help([FromServices]SlackClient slackClient, [FromForm]SlackRequest slackRequest, [FromQuery]string extraParameters, CancellationToken cancellationToken)
         {
             await slackClient.PostOnChannelAsync(slackRequest.team_domain, slackRequest.channel_id, $"command [list help] parameters: [{extraParameters}]", cancellationToken);
-            return Ok();
+            return Ok(new SlackResponse
+            {
+                ResponseType = SlackResponseType.IsChannel,
+                Text = String.Join(Environment.NewLine, new List<string>
+                {
+                    $"Hey, there!",
+                    $"This is the [{slackRequest.command} list]. With it you can"
+                }),
+                Attachments = new List<SlackAttachment>
+                {
+                    new SlackAttachment
+                    {
+                        Text = $"List flags: Try [{slackRequest.command} list flags] list all available flags."
+                    }
+                }
+            });
         }
     }
 }

@@ -24,6 +24,11 @@ namespace Api
             services.AddMvc(options =>
             {
 //                options.Filters.Add<SlackFilter>();
+
+            }).AddJsonOptions(options =>
+            {
+                options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+                options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddHttpClient<SlackClient>();

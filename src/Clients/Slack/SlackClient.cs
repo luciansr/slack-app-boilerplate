@@ -17,7 +17,7 @@ namespace Clients.Slack
         public string Channel { get; set; }
     }
 
-    public class SlackResponse
+    public class SlackClientResponse
     {
         public bool Ok { get; set; }
     }
@@ -49,7 +49,7 @@ namespace Clients.Slack
             if (response.IsSuccessStatusCode)
             {
                 var responseString = await response.Content.ReadAsStringAsync();
-                var slackResponse = GetObjectFromString<SlackResponse>(responseString);
+                var slackResponse = GetObjectFromString<SlackClientResponse>(responseString);
                 Console.WriteLine();
             }
         }
