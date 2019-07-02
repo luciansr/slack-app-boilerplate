@@ -24,7 +24,7 @@ It will be redirected to `/api/list/something`
 ```
 /[command] list something extra things
 ```
-It will be redirected to `/api/list/something&extraParameters=extra+things`
+It will be redirected to `/api/list/something?extraParameters=extra+things`
 
 Easy peasy.
 
