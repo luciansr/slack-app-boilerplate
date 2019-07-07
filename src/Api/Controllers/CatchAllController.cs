@@ -26,7 +26,7 @@ namespace Api.Controllers
             await slackClient.PostOnChannelAsync(slackRequest.team_domain, slackRequest.channel_id, "command [not_found]", cancellationToken);
             return Ok(new SlackResponse
             {
-                ResponseType = SlackResponseType.IsChannel,
+                ResponseType = SlackResponseType.InChannel,
                 Text = $"Sorry. [{slackRequest.command} {slackRequest.text}] is not a valid command. 😟" +
                        $"Try using [{slackRequest.command} help] instead."
             });

@@ -18,8 +18,8 @@ namespace Api.Models
 
     public enum SlackResponseType
     {
-        [EnumMember(Value = "is_channel")] 
-        IsChannel,
+        [EnumMember(Value = "in_channel")] 
+        InChannel,
         [EnumMember(Value = "ephemeral")]
         Ephemeral
     }

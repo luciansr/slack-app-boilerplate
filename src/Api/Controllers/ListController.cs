@@ -28,7 +28,7 @@ namespace Api.Controllers
             await slackClient.PostOnChannelAsync(slackRequest.team_domain, slackRequest.channel_id, "command [list]", cancellationToken);
             return Ok(new SlackResponse
             {
-                ResponseType = SlackResponseType.IsChannel,
+                ResponseType = SlackResponseType.InChannel,
                 Text = "teste"
             });
         }
@@ -41,7 +41,7 @@ namespace Api.Controllers
             await slackClient.PostOnChannelAsync(slackRequest.team_domain, slackRequest.channel_id, $"command [list help] parameters: [{extraParameters}]", cancellationToken);
             return Ok(new SlackResponse
             {
-                ResponseType = SlackResponseType.IsChannel,
+                ResponseType = SlackResponseType.InChannel,
                 Text = String.Join(Environment.NewLine, new List<string>
                 {
                     $"Hey, there!",

@@ -27,7 +27,7 @@ namespace Api.Controllers
             await slackClient.PostOnChannelAsync(slackRequest.team_domain, slackRequest.channel_id, "command [help]", cancellationToken);
             return Ok(new SlackResponse
             {
-                ResponseType = SlackResponseType.IsChannel,
+                ResponseType = SlackResponseType.InChannel,
                 Text = String.Join(Environment.NewLine, new List<string>
                 {
                     $"Welcome to [{slackRequest.command} help]!",
