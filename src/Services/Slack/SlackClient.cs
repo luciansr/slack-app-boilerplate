@@ -13,8 +13,10 @@ namespace Services.Slack
     {
         [JsonProperty("text")]
         public string Text { get; set; }
+
         [JsonProperty("token")]
         public string Token { get; set; }
+
         [JsonProperty("channel")]
         public string Channel { get; set; }
     }
@@ -40,14 +42,18 @@ namespace Services.Slack
         public async Task PostOnChannelAsync(string teamDomain, string channelId, string message, CancellationToken cancellationToken)
         {
             var token = _authRepository.GetTeamBotTokenAsync(teamDomain);
-            var response = await PostAsJsonAsync("/api/chat.postMessage", new SlackPostToChannelRequest
-            {
-                Channel = channelId,
-                Text = message
-            }, cancellationToken,new Dictionary<string, string>
-            {
-                {"Authorization", $"Bearer {token}"}
-            });
+            var response = await PostAsJsonAsync(
+                "/api/chat.postMessage",
+                new SlackPostToChannelRequest
+                {
+                    Channel = channelId,
+                    Text = message
+                },
+                cancellationToken,
+                new Dictionary<string, string>
+                {
+                    {"Authorization", $"Bearer {token}"}
+                });
 
             if (response.IsSuccessStatusCode)
             {
@@ -56,7 +62,7 @@ namespace Services.Slack
                 Console.WriteLine();
             }
         }
-        
+
         protected virtual async Task<HttpResponseMessage> SendAsStringAsync(
             HttpMethod httpMethod,
             string url,
@@ -102,12 +108,12 @@ namespace Services.Slack
         {
             return await SendAsStringAsync(HttpMethod.Post, url, cancellationToken, httpHeaders, GetStringFromObject(contentObject));
         }
-        
+
         private string GetStringFromObject<TType>(TType contentObject)
         {
             return JsonConvert.SerializeObject(contentObject);
         }
-        
+
         private TType GetObjectFromString<TType>(string content)
         {
             return JsonConvert.DeserializeObject<TType>(content);
