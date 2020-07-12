@@ -5,9 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Api.Auth;
 using Api.Middleware;
-using Api.Models;
 using Clients.Slack;
 using Microsoft.AspNetCore.Mvc;
+using Models.Api;
 
 namespace Api.Controllers
 {
@@ -23,12 +23,12 @@ namespace Api.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromServices]SlackClient slackClient, [FromForm]SlackRequest slackRequest, CancellationToken cancellationToken)
         {
-            await slackClient.PostOnChannelAsync(slackRequest.team_domain, slackRequest.channel_id, "command [not_found]", cancellationToken);
+            await slackClient.PostOnChannelAsync(slackRequest.TeamDomain, slackRequest.ChannelId, "command [not_found]", cancellationToken);
             return Ok(new SlackResponse
             {
                 ResponseType = SlackResponseType.InChannel,
-                Text = $"Sorry. [{slackRequest.command} {slackRequest.text}] is not a valid command. 😟" +
-                       $"Try using [{slackRequest.command} help] instead."
+                Text = $"Sorry. [{slackRequest.Command} {slackRequest.Text}] is not a valid command. 😟" +
+                       $"Try using [{slackRequest.Command} help] instead."
             });
         }
     }

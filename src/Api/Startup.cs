@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Models.Config;
+using Services;
+using Services.BackgroundServices;
 
 namespace Api
 {
@@ -21,17 +23,13 @@ namespace Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(options =>
-            {
-//                options.Filters.Add<SlackFilter>();
-
-            }).AddJsonOptions(options =>
-            {
-                options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
-                options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddControllers().AddNewtonsoftJson();
 
             services.AddHttpClient<SlackClient>();
+            services.AddSingleton<SlackEventProducer>();
+            services.AddSingleton<EventStorage>();
+            services.AddSingleton<SlackEventHandler>();
+            services.AddHostedService<EventListenerBackgroundService>();
 
             BindSectionToConfigObject<SlackConfig>(Configuration, services);
         }
@@ -47,35 +45,17 @@ namespace Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-
-//            app.UseRouter(router =>
-//            {
-//                router.MapPost("api/slack", context => {
-//                    using (var httpClient = new HttpClient())
-//                    {
-//                        httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Post, "http://localhost:5001/api/slack2")
-//                        {
-//
-//                        });
-//                    }
-//
-//                    return 0;
-//                });
-//            });
-
             app.UseMiddleware<SlackMiddleware>();
-
             app.UseHttpsRedirection();
-            app.UseMvc();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }

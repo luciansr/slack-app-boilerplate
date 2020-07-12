@@ -6,19 +6,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using Models.Config;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace Clients.Slack
 {
     public class SlackPostToChannelRequest
     {
+        [JsonProperty("text")]
         public string Text { get; set; }
+        [JsonProperty("token")]
         public string Token { get; set; }
+        [JsonProperty("channel")]
         public string Channel { get; set; }
     }
 
     public class SlackClientResponse
     {
+        [JsonProperty("ok")]
         public bool Ok { get; set; }
     }
 
@@ -37,7 +40,7 @@ namespace Clients.Slack
         public async Task PostOnChannelAsync(string teamDomain, string channelId, string message, CancellationToken cancellationToken)
         {
             var token = _slackConfig.SlackTokens[teamDomain].BotToken;
-            var response = await PostAsJsonAsync<Object>("/api/chat.postMessage", new SlackPostToChannelRequest
+            var response = await PostAsJsonAsync("/api/chat.postMessage", new SlackPostToChannelRequest
             {
                 Channel = channelId,
                 Text = message
@@ -102,16 +105,12 @@ namespace Clients.Slack
         
         private string GetStringFromObject<TType>(TType contentObject)
         {
-            JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings();
-            jsonSerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            return JsonConvert.SerializeObject(contentObject, jsonSerializerSettings);
+            return JsonConvert.SerializeObject(contentObject);
         }
         
         private TType GetObjectFromString<TType>(string content)
         {
-            JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings();
-            jsonSerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            return JsonConvert.DeserializeObject<TType>(content, jsonSerializerSettings);
+            return JsonConvert.DeserializeObject<TType>(content);
         }
     }
 }
