@@ -4,8 +4,8 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Models.Config;
 using Newtonsoft.Json;
+using Services.Auth;
 
 namespace Services.Slack
 {
@@ -28,18 +28,18 @@ namespace Services.Slack
     public class SlackClient
     {
         private readonly HttpClient _httpClient;
-        private readonly SlackConfig _slackConfig;
+        private readonly IAuthConfigurationRepository _authRepository;
 
-        public SlackClient(HttpClient httpClient, SlackConfig slackConfig)
+        public SlackClient(HttpClient httpClient, IAuthConfigurationRepository authRepository)
         {
             _httpClient = httpClient;
-            _slackConfig = slackConfig;
+            _authRepository = authRepository;
             _httpClient.BaseAddress = new Uri("https://slack.com");
         }
 
         public async Task PostOnChannelAsync(string teamDomain, string channelId, string message, CancellationToken cancellationToken)
         {
-            var token = _slackConfig.SlackTokens[teamDomain].BotToken;
+            var token = _authRepository.GetTeamBotTokenAsync(teamDomain);
             var response = await PostAsJsonAsync("/api/chat.postMessage", new SlackPostToChannelRequest
             {
                 Channel = channelId,
