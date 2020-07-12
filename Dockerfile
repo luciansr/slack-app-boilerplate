@@ -14,6 +14,7 @@ RUN dotnet publish -c Release -o /app/out /p:Version=$VERSION
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 ENV LANG=en_US.UTF-8
 ENV ASPNETCORE_URLS=http://*:80
+ENV ASPNETCORE_ENVIRONMENT=Stable
 WORKDIR /app
 COPY --from=build-env /app/out .
 EXPOSE 80
