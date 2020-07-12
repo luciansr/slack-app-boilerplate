@@ -1,9 +1,11 @@
+using System.Threading.Tasks;
 using Models.Api;
+using Models.Events;
 
 namespace Services.EventMatchers
 {
     public interface IEventMatcher
     {
-        bool SlackEventMatches(SlackEventBody slackEventBody);
+        Task<EventMatchResult> EventMatchesAsync(SlackEventBody slackEventBody);
     }
 }

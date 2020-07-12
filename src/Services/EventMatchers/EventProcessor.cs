@@ -17,9 +17,13 @@ namespace Services.EventMatchers
 
         public async Task MatchAndProcessAsync(SlackEventBody slackEventBody, CancellationToken cancellationToken)
         {
-            if (_eventMatcher.SlackEventMatches(slackEventBody))
+            var eventMatchResult = await _eventMatcher.EventMatchesAsync(slackEventBody);
+            if (eventMatchResult.Success)
             {
-                await _actionExecutor.ExecuteActionAsync(slackEventBody, cancellationToken);
+                await _actionExecutor.ExecuteActionAsync(
+                    slackEventBody, 
+                    eventMatchResult.MatchItems, 
+                    cancellationToken);
             }
         }
     }
