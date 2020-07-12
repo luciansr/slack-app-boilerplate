@@ -8,7 +8,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Models.Api;
@@ -28,11 +30,13 @@ namespace Api.Auth
     
     public class SlackAuthenticationHandler : AuthenticationHandler<AuthenticationSchemeOptions>
     {
+        private readonly IWebHostEnvironment _hostEnvironment;
         private readonly IAuthConfigurationRepository _authConfigurationRepository;
         public static string AuthenticationScheme = "slack_json_auth"; 
         public static string AuthenticationName = "slack_json_auth_name"; 
         
         public SlackAuthenticationHandler(
+            IWebHostEnvironment hostEnvironment,
             IAuthConfigurationRepository authConfigurationRepository,
             IOptionsMonitor<AuthenticationSchemeOptions> options, 
             ILoggerFactory logger, 
@@ -40,6 +44,7 @@ namespace Api.Auth
             ISystemClock clock) 
             : base(options, logger, encoder, clock)
         {
+            _hostEnvironment = hostEnvironment;
             _authConfigurationRepository = authConfigurationRepository;
         }
 
@@ -64,16 +69,15 @@ namespace Api.Auth
         
         private async Task<bool> VerifySlackOrigin(HttpRequest request, CancellationToken cancellationToken)
         {
-            string body = null;
-            
+            if (_hostEnvironment.IsDevelopment())
+            {
+                return true;
+            }
+
             request.EnableBuffering();
-            // var ms = new MemoryStream();
-            // await request.Body.CopyToAsync(ms, cancellationToken);
-            
             var stream = new StreamReader(request.Body);
             stream.BaseStream.Seek(0, SeekOrigin.Begin);
-            body = await stream.ReadToEndAsync();
-            // ms.Position = 0;
+            var body = await stream.ReadToEndAsync();
             request.Body.Position = 0;
 
             var teamId = JsonConvert.DeserializeObject<SlackBaseEventBody>(body)?.TeamId;
