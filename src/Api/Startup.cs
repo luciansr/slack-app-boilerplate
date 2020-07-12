@@ -7,7 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Models.Config;
 using Services;
 using Services.BackgroundServices;
+using Services.Events.Actions;
 using Services.Events.Handlers;
+using Services.Events.Matchers;
 using Services.Events.Processors;
 using Services.Storage;
 
@@ -42,6 +44,14 @@ namespace Api
             services.AddSingleton<ReactionAddedEventHandler>();
             services.AddSingleton<IEventProcessorProvider, EventProcessorProvider>();
             services.AddSingleton<IProcessingConfigurationStorage, FileProcessingStorage>();
+            
+            //action executors
+            services.AddSingleton<AnswerMessageActionExecutor>();
+            services.AddSingleton<UnknownActionExecutor>();
+            
+            //event matchers
+            services.AddSingleton<UnknownEventMatcher>();
+            services.AddSingleton<TextContainsEventMatcher>();
 
             BindSectionToConfigObject<SlackConfig>(Configuration, services);
         }

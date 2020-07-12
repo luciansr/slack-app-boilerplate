@@ -2,7 +2,6 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
-using Models;
 using Models.Api;
 using Services.Events.Handlers;
 using Services.Storage;
@@ -21,7 +20,7 @@ namespace Services.BackgroundServices
             _eventStorage = eventStorage;
             _slackEventHandler = slackEventHandler;
         }
-        
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             var semaphoreSlim = new SemaphoreSlim(10, 10);
@@ -33,7 +32,7 @@ namespace Services.BackgroundServices
                     _ = HandleEventInBackground(slackEvent, semaphoreSlim, stoppingToken);
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
+                await Task.Delay(TimeSpan.FromSeconds(10), stoppingToken);
             }
         }
 

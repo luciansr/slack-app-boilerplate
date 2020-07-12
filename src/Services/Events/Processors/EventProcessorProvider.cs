@@ -10,10 +10,22 @@ namespace Services.Events.Processors
 {
     public class EventProcessorProvider : IEventProcessorProvider
     {
+        private readonly UnknownActionExecutor _unknownActionExecutor;
+        private readonly AnswerMessageActionExecutor _answerMessageActionExecutor;
+        private readonly UnknownEventMatcher _unknownEventMatcher;
+        private readonly TextContainsEventMatcher _textContainsEventMatcher;
         private readonly Dictionary<string, Dictionary<string, EventProcessor[]>> _eventProcessors;
 
-        public EventProcessorProvider()
+        public EventProcessorProvider(
+            UnknownActionExecutor unknownActionExecutor,
+            AnswerMessageActionExecutor answerMessageActionExecutor,
+            UnknownEventMatcher unknownEventMatcher,
+            TextContainsEventMatcher textContainsEventMatcher)
         {
+            _unknownActionExecutor = unknownActionExecutor;
+            _answerMessageActionExecutor = answerMessageActionExecutor;
+            _unknownEventMatcher = unknownEventMatcher;
+            _textContainsEventMatcher = textContainsEventMatcher;
             _eventProcessors = new Dictionary<string, Dictionary<string, EventProcessor[]>>();
         }
         
@@ -92,13 +104,18 @@ namespace Services.Events.Processors
         private IEventMatcher GetEventMatcher(EventMatchConfiguration matchConfiguration)
         {
             return matchConfiguration switch  {
-                _ => new UnknownEventMatcher()
+                {Type: MatchType.TextContains} => _textContainsEventMatcher,
+                _ => _unknownEventMatcher
             };
         }
 
         private IActionExecutor GetActionExecutor(ActionConfiguration actionConfiguration)
         {
-            throw new NotImplementedException();
+            return actionConfiguration switch
+            {
+                {Type: ActionType.AnswerToMessage} => _answerMessageActionExecutor,
+                _ => _unknownActionExecutor
+            };
         }
     }
 }
