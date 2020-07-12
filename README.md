@@ -36,12 +36,12 @@ All your requests are validated, so you know that they are really from Slack.
 
 Using: 
 ```
-[SlackAuthorize(authorizedUsernames: new[] {"luciansr"})]
+[SlackAuthorizeByUser(authorizedUsernames: new[] {"luciansr"})]
 ``` 
 You can ensure that only "luciansr" is allowed to execute your route.
 
 ```
-[SlackAuthorize(authorizedChannels: new[] {"general"})]
+[SlackAuthorizeByUser(authorizedChannels: new[] {"general"})]
 ``` 
 
 You can ensure that only requests from the channel "general" are allowed to execute your route.

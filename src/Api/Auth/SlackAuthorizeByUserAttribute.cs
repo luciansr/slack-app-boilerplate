@@ -11,12 +11,12 @@ using Newtonsoft.Json;
 
 namespace Api.Auth
 {
-    public class SlackAuthorizeAttribute : ActionFilterAttribute
+    public class SlackAuthorizeByUserAttribute : ActionFilterAttribute
     {
         private readonly string[] _authorizedUsernames;
         private readonly string[] _authorizedChannels;
 
-        public SlackAuthorizeAttribute(string[] authorizedUsernames = null, string[] authorizedChannels = null)
+        public SlackAuthorizeByUserAttribute(string[] authorizedUsernames = null, string[] authorizedChannels = null)
         {
             _authorizedUsernames = authorizedUsernames;
             _authorizedChannels = authorizedChannels;

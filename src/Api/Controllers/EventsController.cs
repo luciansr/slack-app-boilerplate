@@ -10,7 +10,6 @@ namespace Api.Controllers
 {
     [Route("api/events")]
     [ApiController]
-    [SlackJsonAuthentication]
     public class EventsController : ControllerBase
     {
         private readonly SlackEventProducer _slackEventProducer;
@@ -22,6 +21,7 @@ namespace Api.Controllers
 
         [HttpPost]
         [Route("receive")]
+        [SlackAuthorize]
         public async Task<IActionResult> Receive(
             [FromBody, Required] 
             SlackEventBody slackEventBody,
