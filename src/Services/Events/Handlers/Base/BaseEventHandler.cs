@@ -3,9 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Models.Api;
 using Models.Events;
-using Services.EventMatchers;
+using Services.Events.Processors;
 
-namespace Services.EventHandlers.Base
+namespace Services.Events.Handlers.Base
 {
     public class BaseEventHandler : ISlackEventHandler
     {

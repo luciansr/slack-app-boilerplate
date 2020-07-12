@@ -1,8 +1,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Models.Api;
+using Services.Events.Actions;
+using Services.Events.Matchers;
 
-namespace Services.EventMatchers
+namespace Services.Events.Processors
 {
     public class EventProcessor
     {

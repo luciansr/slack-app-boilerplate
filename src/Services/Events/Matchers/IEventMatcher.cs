@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Models.Api;
 using Models.Events;
 
-namespace Services.EventMatchers
+namespace Services.Events.Matchers
 {
     public interface IEventMatcher
     {

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading;
 using Models.Events;
 
-namespace Services.EventMatchers
+namespace Services.Events.Processors
 {
     public interface IEventProcessorProvider
     {

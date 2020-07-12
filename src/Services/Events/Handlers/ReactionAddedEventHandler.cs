@@ -1,8 +1,8 @@
 using Models.Events;
-using Services.EventHandlers.Base;
-using Services.EventMatchers;
+using Services.Events.Handlers.Base;
+using Services.Events.Processors;
 
-namespace Services.EventHandlers
+namespace Services.Events.Handlers
 {
     public class ReactionAddedEventHandler : BaseEventHandler
     {

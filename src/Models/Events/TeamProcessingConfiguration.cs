@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
@@ -11,7 +10,7 @@ namespace Models.Events
         [JsonProperty("teamId")]
         public string TeamId { get; set; }
         [JsonProperty("channelConfigurations")]
-        private Dictionary<string, ChannelProcessingConfiguration[]> ChannelConfigurations { get; set; }
+        public Dictionary<string, ChannelProcessingConfiguration[]> ChannelConfigurations { get; set; }
     }
 
     public class ChannelProcessingConfiguration
@@ -33,8 +32,8 @@ namespace Models.Events
     [JsonConverter(typeof(StringEnumConverter))]
     public enum MatchType
     {
-        [EnumMember(Value = "TextEquals")]
-        TextEquals,
+        [EnumMember(Value = "TextContains")]
+        TextContains,
     }
     
     public class ActionConfiguration
