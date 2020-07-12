@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
 
-namespace Api.Models
+namespace Models.Api
 {
     public class SlackResponse
     {

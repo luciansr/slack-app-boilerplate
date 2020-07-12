@@ -3,20 +3,20 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
-using Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Models.Api;
 using Models.Config;
 using Newtonsoft.Json;
 
 namespace Api.Auth
 {
-    public class SlackAuthorizeAttribute : ActionFilterAttribute
+    public class SlackAuthorizeByUserAttribute : ActionFilterAttribute
     {
         private readonly string[] _authorizedUsernames;
         private readonly string[] _authorizedChannels;
 
-        public SlackAuthorizeAttribute(string[] authorizedUsernames = null, string[] authorizedChannels = null)
+        public SlackAuthorizeByUserAttribute(string[] authorizedUsernames = null, string[] authorizedChannels = null)
         {
             _authorizedUsernames = authorizedUsernames;
             _authorizedChannels = authorizedChannels;

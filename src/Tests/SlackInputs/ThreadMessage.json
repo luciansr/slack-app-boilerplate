@@ -1,0 +1,61 @@
+{
+  "method": "POST",
+  "path": "/",
+  "query": {},
+  "headers": {
+    "x-forwarded-for": "54.234.230.47",
+    "x-forwarded-proto": "https",
+    "x-forwarded-port": "443",
+    "host": "4be2e06e30796402f0dbdadddcaa2cf3.m.pipedream.net",
+    "x-amzn-trace-id": "Root=1-5f0a0234-12e3bb4bc4840e6472a1fc7f",
+    "content-length": "652",
+    "user-agent": "Slackbot 1.0 (+https://api.slack.com/robots)",
+    "accept": "*/*",
+    "accept-encoding": "gzip,deflate",
+    "content-type": "application/json",
+    "x-slack-signature": "v0=2491249b3d522eff4e83363d6518ae5533a95e765501b6a127030dd13ef0aab9",
+    "x-slack-request-timestamp": "1594491444"
+  },
+  "bodyRaw": "{\"token\":\"8O4s3rgvVFjHTv3aAVtbo2FP\",\"team_id\":\"TKVHCH21L\",\"api_app_id\":\"AKV8SLM6K\",\"event\":{\"client_msg_id\":\"8c4d20e4-553a-4718-b5ac-fd330529082f\",\"type\":\"message\",\"text\":\"ol\\u00e1 na thread 2\",\"user\":\"UKG1CTVU3\",\"ts\":\"1594491443.001400\",\"team\":\"TKVHCH21L\",\"blocks\":[{\"type\":\"rich_text\",\"block_id\":\"HT3j2\",\"elements\":[{\"type\":\"rich_text_section\",\"elements\":[{\"type\":\"text\",\"text\":\"ol\\u00e1 na thread 2\"}]}]}],\"thread_ts\":\"1594491398.001100\",\"parent_user_id\":\"UKG1CTVU3\",\"channel\":\"CKTDE9BHB\",\"event_ts\":\"1594491443.001400\",\"channel_type\":\"channel\"},\"type\":\"event_callback\",\"event_id\":\"Ev016Y78V83D\",\"event_time\":1594491443,\"authed_users\":[\"UKMARFXLH\"]}",
+  "body": {
+    "token": "8O4s3rgvVFjHTv3aAVtbo2FP",
+    "team_id": "TKVHCH21L",
+    "api_app_id": "AKV8SLM6K",
+    "event": {
+      "client_msg_id": "8c4d20e4-553a-4718-b5ac-fd330529082f",
+      "type": "message",
+      "text": "olá na thread 2",
+      "user": "UKG1CTVU3",
+      "ts": "1594491443.001400",
+      "team": "TKVHCH21L",
+      "blocks": [
+        {
+          "type": "rich_text",
+          "block_id": "HT3j2",
+          "elements": [
+            {
+              "type": "rich_text_section",
+              "elements": [
+                {
+                  "type": "text",
+                  "text": "olá na thread 2"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "thread_ts": "1594491398.001100",
+      "parent_user_id": "UKG1CTVU3",
+      "channel": "CKTDE9BHB",
+      "event_ts": "1594491443.001400",
+      "channel_type": "channel"
+    },
+    "type": "event_callback",
+    "event_id": "Ev016Y78V83D",
+    "event_time": 1594491443,
+    "authed_users": [
+      "UKMARFXLH"
+    ]
+  }
+}

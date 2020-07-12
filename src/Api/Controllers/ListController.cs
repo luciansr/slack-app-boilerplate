@@ -5,9 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Api.Auth;
 using Api.Middleware;
-using Api.Models;
-using Clients.Slack;
 using Microsoft.AspNetCore.Mvc;
+using Models.Api;
+using Services.Slack;
 
 namespace Api.Controllers
 {
@@ -15,8 +15,8 @@ namespace Api.Controllers
     // /[command] list
     [Route("api/[controller]")]
     [ApiController]
-    [SlackAuthentication]
-    [SlackAuthorize(authorizedUsernames: new[] {"luciansr"})]
+    [SlackFormAuthentication]
+    [SlackAuthorizeByUser(authorizedUsernames: new[] {"luciansr"})]
     public class ListController : ControllerBase
     {
         // /[command] list
@@ -25,7 +25,7 @@ namespace Api.Controllers
         [Route("{*.}")] 
         public async Task<IActionResult> Post([FromServices]SlackClient slackClient, [FromForm]SlackRequest slackRequest, CancellationToken cancellationToken)
         {
-            await slackClient.PostOnChannelAsync(slackRequest.team_domain, slackRequest.channel_id, "command [list]", cancellationToken);
+            await slackClient.PostOnChannelAsync(slackRequest.TeamDomain, slackRequest.ChannelId, "command [list]", cancellationToken);
             return Ok(new SlackResponse
             {
                 ResponseType = SlackResponseType.InChannel,
@@ -38,20 +38,20 @@ namespace Api.Controllers
         [Route("help")]
         public async Task<IActionResult> Help([FromServices]SlackClient slackClient, [FromForm]SlackRequest slackRequest, [FromQuery]string extraParameters, CancellationToken cancellationToken)
         {
-            await slackClient.PostOnChannelAsync(slackRequest.team_domain, slackRequest.channel_id, $"command [list help] parameters: [{extraParameters}]", cancellationToken);
+            await slackClient.PostOnChannelAsync(slackRequest.TeamDomain, slackRequest.ChannelId, $"command [list help] parameters: [{extraParameters}]", cancellationToken);
             return Ok(new SlackResponse
             {
                 ResponseType = SlackResponseType.InChannel,
                 Text = String.Join(Environment.NewLine, new List<string>
                 {
                     $"Hey, there!",
-                    $"This is the [{slackRequest.command} list]. With it you can"
+                    $"This is the [{slackRequest.Command} list]. With it you can"
                 }),
                 Attachments = new List<SlackAttachment>
                 {
                     new SlackAttachment
                     {
-                        Text = $"List flags: Try [{slackRequest.command} list flags] list all available flags."
+                        Text = $"List flags: Try [{slackRequest.Command} list flags] list all available flags."
                     }
                 }
             });

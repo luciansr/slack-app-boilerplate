@@ -8,7 +8,9 @@ namespace Models.Config
         public string Tokens { get; set; }
 
         private Dictionary<string, SlackToken> _slackTokens;
-        public Dictionary<string, SlackToken> SlackTokens {
+
+        public Dictionary<string, SlackToken> SlackTokens
+        {
             get
             {
                 if (string.IsNullOrWhiteSpace(Tokens))
@@ -20,7 +22,7 @@ namespace Models.Config
                 {
                     return _slackTokens;
                 }
-                
+
                 _slackTokens = new Dictionary<string, SlackToken>();
 
                 var tokens = Tokens.Split(new[] {","}, StringSplitOptions.RemoveEmptyEntries);

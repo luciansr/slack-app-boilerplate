@@ -1,0 +1,59 @@
+{
+  "method": "POST",
+  "path": "/",
+  "query": {},
+  "headers": {
+    "x-forwarded-for": "3.81.53.73",
+    "x-forwarded-proto": "https",
+    "x-forwarded-port": "443",
+    "host": "4be2e06e30796402f0dbdadddcaa2cf3.m.pipedream.net",
+    "x-amzn-trace-id": "Root=1-5f0a0309-6a7d28dce9e0e8d496fdeef3",
+    "content-length": "563",
+    "user-agent": "Slackbot 1.0 (+https://api.slack.com/robots)",
+    "accept": "*/*",
+    "accept-encoding": "gzip,deflate",
+    "content-type": "application/json",
+    "x-slack-signature": "v0=f816a51bce47e7ed7a8c52c55b638473ea54c4314a819897b92c63d62b388e6b",
+    "x-slack-request-timestamp": "1594491657"
+  },
+  "bodyRaw": "{\"token\":\"8O4s3rgvVFjHTv3aAVtbo2FP\",\"team_id\":\"TKVHCH21L\",\"api_app_id\":\"AKV8SLM6K\",\"event\":{\"client_msg_id\":\"7c1fa3db-5eee-435b-bd7a-7f34519a3c22\",\"type\":\"message\",\"text\":\"asdasd\",\"user\":\"UKG1CTVU3\",\"ts\":\"1594491656.001500\",\"team\":\"TKVHCH21L\",\"blocks\":[{\"type\":\"rich_text\",\"block_id\":\"D6gKD\",\"elements\":[{\"type\":\"rich_text_section\",\"elements\":[{\"type\":\"text\",\"text\":\"asdasd\"}]}]}],\"channel\":\"G017MRXRRRN\",\"event_ts\":\"1594491656.001500\",\"channel_type\":\"group\"},\"type\":\"event_callback\",\"event_id\":\"Ev01746PSETW\",\"event_time\":1594491656,\"authed_users\":[\"UKMARFXLH\"]}",
+  "body": {
+    "token": "8O4s3rgvVFjHTv3aAVtbo2FP",
+    "team_id": "TKVHCH21L",
+    "api_app_id": "AKV8SLM6K",
+    "event": {
+      "client_msg_id": "7c1fa3db-5eee-435b-bd7a-7f34519a3c22",
+      "type": "message",
+      "text": "asdasd",
+      "user": "UKG1CTVU3",
+      "ts": "1594491656.001500",
+      "team": "TKVHCH21L",
+      "blocks": [
+        {
+          "type": "rich_text",
+          "block_id": "D6gKD",
+          "elements": [
+            {
+              "type": "rich_text_section",
+              "elements": [
+                {
+                  "type": "text",
+                  "text": "asdasd"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "channel": "G017MRXRRRN",
+      "event_ts": "1594491656.001500",
+      "channel_type": "group"
+    },
+    "type": "event_callback",
+    "event_id": "Ev01746PSETW",
+    "event_time": 1594491656,
+    "authed_users": [
+      "UKMARFXLH"
+    ]
+  }
+}

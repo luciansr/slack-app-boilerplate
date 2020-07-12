@@ -1,11 +1,20 @@
-﻿using Api.Middleware;
-using Clients.Slack;
+﻿using Api.Auth;
+using Api.Middleware;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Models.Config;
+using Services;
+using Services.Auth;
+using Services.BackgroundServices;
+using Services.Events.Actions;
+using Services.Events.Handlers;
+using Services.Events.Matchers;
+using Services.Events.Processors;
+using Services.Slack;
+using Services.Storage;
 
 namespace Api
 {
@@ -16,22 +25,44 @@ namespace Api
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc(options =>
-            {
-//                options.Filters.Add<SlackFilter>();
-
-            }).AddJsonOptions(options =>
-            {
-                options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
-                options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
-            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddControllers().AddNewtonsoftJson();
 
             services.AddHttpClient<SlackClient>();
+            services.AddSingleton<SlackEventProducer>();
+            services.AddSingleton<EventStorage>();
+            
+            services.AddHostedService<EventListenerBackgroundService>();
+            services.AddHostedService<ProcessingConfigurationBackgroundService>();
+
+            services.AddSingleton<SlackEventHandler>();
+            services.AddSingleton<ChannelMessageEventHandler>();
+            services.AddSingleton<ThreadMessageEventHandler>();
+            services.AddSingleton<UserJoinedEventHandler>();
+            services.AddSingleton<AppMentionEventHandler>();
+            services.AddSingleton<ReactionAddedEventHandler>();
+            services.AddSingleton<IEventProcessorProvider, EventProcessorProvider>();
+            services.AddSingleton<IProcessingConfigurationStorage, FileProcessingStorage>();
+            
+            //action executors
+            services.AddSingleton<AnswerMessageActionExecutor>();
+            services.AddSingleton<UnknownActionExecutor>();
+            
+            //event matchers
+            services.AddSingleton<UnknownEventMatcher>();
+            services.AddSingleton<TextContainsEventMatcher>();
+            
+            //auth
+            services.AddSingleton<IAuthConfigurationRepository, AuthConfigurationRepository>();
+
+            services.AddAuthentication()
+                .AddScheme<AuthenticationSchemeOptions, SlackAuthenticationHandler>(
+                    SlackAuthenticationHandler.AuthenticationScheme, 
+                    null);
 
             BindSectionToConfigObject<SlackConfig>(Configuration, services);
         }
@@ -45,37 +76,19 @@ namespace Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
-
-//            app.UseRouter(router =>
-//            {
-//                router.MapPost("api/slack", context => {
-//                    using (var httpClient = new HttpClient())
-//                    {
-//                        httpClient.SendAsync(new HttpRequestMessage(HttpMethod.Post, "http://localhost:5001/api/slack2")
-//                        {
-//
-//                        });
-//                    }
-//
-//                    return 0;
-//                });
-//            });
-
-            app.UseMiddleware<SlackMiddleware>();
-
+            app.UseMiddleware<SlackCommandMiddleware>();
             app.UseHttpsRedirection();
-            app.UseMvc();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
         }
     }
 }

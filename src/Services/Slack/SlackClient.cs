@@ -4,47 +4,56 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Models.Config;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using Services.Auth;
 
-namespace Clients.Slack
+namespace Services.Slack
 {
     public class SlackPostToChannelRequest
     {
+        [JsonProperty("text")]
         public string Text { get; set; }
+
+        [JsonProperty("token")]
         public string Token { get; set; }
+
+        [JsonProperty("channel")]
         public string Channel { get; set; }
     }
 
     public class SlackClientResponse
     {
+        [JsonProperty("ok")]
         public bool Ok { get; set; }
     }
 
     public class SlackClient
     {
         private readonly HttpClient _httpClient;
-        private readonly SlackConfig _slackConfig;
+        private readonly IAuthConfigurationRepository _authRepository;
 
-        public SlackClient(HttpClient httpClient, SlackConfig slackConfig)
+        public SlackClient(HttpClient httpClient, IAuthConfigurationRepository authRepository)
         {
             _httpClient = httpClient;
-            _slackConfig = slackConfig;
+            _authRepository = authRepository;
             _httpClient.BaseAddress = new Uri("https://slack.com");
         }
 
         public async Task PostOnChannelAsync(string teamDomain, string channelId, string message, CancellationToken cancellationToken)
         {
-            var token = _slackConfig.SlackTokens[teamDomain].BotToken;
-            var response = await PostAsJsonAsync<Object>("/api/chat.postMessage", new SlackPostToChannelRequest
-            {
-                Channel = channelId,
-                Text = message
-            }, cancellationToken,new Dictionary<string, string>
-            {
-                {"Authorization", $"Bearer {token}"}
-            });
+            var token = _authRepository.GetTeamBotTokenAsync(teamDomain);
+            var response = await PostAsJsonAsync(
+                "/api/chat.postMessage",
+                new SlackPostToChannelRequest
+                {
+                    Channel = channelId,
+                    Text = message
+                },
+                cancellationToken,
+                new Dictionary<string, string>
+                {
+                    {"Authorization", $"Bearer {token}"}
+                });
 
             if (response.IsSuccessStatusCode)
             {
@@ -53,7 +62,7 @@ namespace Clients.Slack
                 Console.WriteLine();
             }
         }
-        
+
         protected virtual async Task<HttpResponseMessage> SendAsStringAsync(
             HttpMethod httpMethod,
             string url,
@@ -99,19 +108,15 @@ namespace Clients.Slack
         {
             return await SendAsStringAsync(HttpMethod.Post, url, cancellationToken, httpHeaders, GetStringFromObject(contentObject));
         }
-        
+
         private string GetStringFromObject<TType>(TType contentObject)
         {
-            JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings();
-            jsonSerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            return JsonConvert.SerializeObject(contentObject, jsonSerializerSettings);
+            return JsonConvert.SerializeObject(contentObject);
         }
-        
+
         private TType GetObjectFromString<TType>(string content)
         {
-            JsonSerializerSettings jsonSerializerSettings = new JsonSerializerSettings();
-            jsonSerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-            return JsonConvert.DeserializeObject<TType>(content, jsonSerializerSettings);
+            return JsonConvert.DeserializeObject<TType>(content);
         }
     }
 }
