@@ -1,35 +1,37 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Primitives;
-using Newtonsoft.Json.Linq;
 
 namespace Api.Middleware
 {
-
-
-    public class SlackMiddleware
+    public class SlackCommandMiddleware
     {
         private readonly RequestDelegate _next;
 
-        public SlackMiddleware(RequestDelegate next)
+        public SlackCommandMiddleware(RequestDelegate next)
         {
             _next = next;
         }
 
         public async Task Invoke(HttpContext httpContext)
         {
-            var textCommand = httpContext.Request.Form["text"].FirstOrDefault()?.Split(new[] {" "}, 3, StringSplitOptions.RemoveEmptyEntries);
+            if (httpContext.Request.Path.StartsWithSegments(new PathString("/api/events/receive")))
+            {
+                await _next(httpContext);
+                return;
+            }
+            
+            string[] textCommand = null;
+            if (httpContext.Request.Form.TryGetValue("text", out var textFormValue))
+            {
+                textCommand = textFormValue
+                    .FirstOrDefault()
+                    ?.Split(new[] {" "}, 3, StringSplitOptions.RemoveEmptyEntries);
+            }
 
             if (textCommand == null || textCommand.Length == 0)
             {
-                await _next(httpContext);
                 return;
             }
 

@@ -1,9 +1,9 @@
 using System;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -30,10 +30,12 @@ namespace Api.Auth
         {
             _authConfigurationRepository = authConfigurationRepository;
         }
-        
-        public override void OnActionExecuting(ActionExecutingContext context)
+
+        public override async Task OnActionExecutionAsync(
+            ActionExecutingContext context,
+            ActionExecutionDelegate next)
         {
-            if (VerifySlackOrigin(context.HttpContext.Request))
+            if (await VerifySlackOrigin(context.HttpContext.Request, context.HttpContext.RequestAborted))
             {
                 base.OnActionExecuting(context);
                 return;
@@ -49,17 +51,24 @@ namespace Api.Auth
             };
         }
 
-        private bool VerifySlackOrigin(HttpRequest request)
+        private async Task<bool> VerifySlackOrigin(HttpRequest request, CancellationToken cancellationToken)
         {
             string body = null;
             
             request.EnableBuffering();
-            var stream = new StreamReader(request.Body, Encoding.UTF8);
-            body = stream.ReadToEnd();
-            request.Body.Position = 0;
 
-            var teamId = JsonConvert.DeserializeObject<SlackBaseEventBody>(body).TeamId;
-            
+
+            var stream = new StreamReader(request.Body);
+            stream.BaseStream.Seek(0, SeekOrigin.Begin);
+            body = await stream.ReadToEndAsync();
+            // request.Body.Position = 0;
+
+            var teamId = JsonConvert.DeserializeObject<SlackBaseEventBody>(body)?.TeamId;
+            if (string.IsNullOrWhiteSpace(teamId))
+            {
+                return false;
+            }
+
             var slackTime = request?.Headers["X-Slack-Request-Timestamp"];
             string expectedSignature = request?.Headers["X-Slack-Signature"];
             var receivedPayload = $"v0:{slackTime}:{body}";
