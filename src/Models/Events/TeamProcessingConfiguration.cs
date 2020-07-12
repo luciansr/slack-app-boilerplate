@@ -25,8 +25,8 @@ namespace Models.Events
     {
         [JsonProperty("type")]
         public MatchType Type { get; set; }
-        [JsonProperty("data")]
-        public string Data { get; set; }
+        [JsonProperty("target")]
+        public string Target { get; set; }
     }
     
     [JsonConverter(typeof(StringEnumConverter))]
@@ -40,15 +40,15 @@ namespace Models.Events
     {
         [JsonProperty("type")]
         public ActionType Type { get; set; }
-        [JsonProperty("text")]
-        public string Text { get; set; }
+        [JsonProperty("value")]
+        public string Value { get; set; }
     }
 
   
     [JsonConverter(typeof(StringEnumConverter))]
     public enum ActionType
     {
-        [EnumMember(Value = "AnswerToChannelMessage")]
-        AnswerToChannelMessage,
+        [EnumMember(Value = "AnswerToMessage")]
+        AnswerToMessage,
     }
 }

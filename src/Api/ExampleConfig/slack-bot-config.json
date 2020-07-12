@@ -1,0 +1,16 @@
+{
+  "TKVHCH21L": {
+    "CKTDE9BHB": [
+      {
+        "match": {
+          "type": "TextContains",
+          "target": "Hello world, bot!"
+        },
+        "action": {
+          "type": "AnswerToMessage",
+          "value": "Hello, Human!"
+        }
+      }
+    ]
+  }
+}
