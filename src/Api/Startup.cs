@@ -1,5 +1,4 @@
 ﻿using Api.Middleware;
-using Clients.Slack;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -11,6 +10,7 @@ using Services.Events.Actions;
 using Services.Events.Handlers;
 using Services.Events.Matchers;
 using Services.Events.Processors;
+using Services.Slack;
 using Services.Storage;
 
 namespace Api
@@ -65,7 +65,7 @@ namespace Api
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseMiddleware<SlackMiddleware>();
             app.UseHttpsRedirection();

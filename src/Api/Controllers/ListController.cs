@@ -5,9 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Api.Auth;
 using Api.Middleware;
-using Clients.Slack;
 using Microsoft.AspNetCore.Mvc;
 using Models.Api;
+using Services.Slack;
 
 namespace Api.Controllers
 {

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Models.Config;
 using Newtonsoft.Json;
 
-namespace Clients.Slack
+namespace Services.Slack
 {
     public class SlackPostToChannelRequest
     {

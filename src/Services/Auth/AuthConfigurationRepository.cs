@@ -1,6 +1,6 @@
 using System;
 
-namespace Clients.Configuration
+namespace Services.Auth
 {
     public interface IAuthConfigurationRepository
     {
