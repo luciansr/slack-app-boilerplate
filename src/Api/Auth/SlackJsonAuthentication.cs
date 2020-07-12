@@ -7,26 +7,28 @@ using System.Text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Models.Api;
 using Models.Config;
 using Newtonsoft.Json;
+using Services.Auth;
 
 namespace Api.Auth
 {
-    
-    public class SlackAuthenticationAttribute : TypeFilterAttribute
+    public class SlackJsonAuthenticationAttribute : TypeFilterAttribute
     {
-        public SlackAuthenticationAttribute() : base(typeof(SlackAuthenticationFilter))
+        public SlackJsonAuthenticationAttribute() : base(typeof(SlackJsonAuthenticationFilter))
         {
         }
     }
     
-    internal class SlackAuthenticationFilter : ActionFilterAttribute
+    internal class SlackJsonAuthenticationFilter : ActionFilterAttribute
     {
-        private readonly SlackConfig _slackConfig;
+        private readonly IAuthConfigurationRepository _authConfigurationRepository;
 
-        public SlackAuthenticationFilter(SlackConfig slackConfig)
+        public SlackJsonAuthenticationFilter(
+            IAuthConfigurationRepository authConfigurationRepository)
         {
-            _slackConfig = slackConfig;
+            _authConfigurationRepository = authConfigurationRepository;
         }
         
         public override void OnActionExecuting(ActionExecutingContext context)
@@ -41,7 +43,7 @@ namespace Api.Auth
             {
                 Content = JsonConvert.SerializeObject(new
                 {
-                    error = "Only messages from Slack are allowed!"
+                    error = "Only messages from Slack are allowed."
                 }),
                 StatusCode = 403
             };
@@ -49,29 +51,22 @@ namespace Api.Auth
 
         private bool VerifySlackOrigin(HttpRequest request)
         {
-            var teamDomain = request.Form["team_domain"].FirstOrDefault();
-            if (string.IsNullOrWhiteSpace(teamDomain))
-            {
-                return false;
-            }
+            string body = null;
+            
+            request.EnableBuffering();
+            var stream = new StreamReader(request.Body, Encoding.UTF8);
+            body = stream.ReadToEnd();
+            request.Body.Position = 0;
 
-            var body = string.Join("&", request.Form.Select(x => $"{x.Key}={WebUtility.UrlEncode(x.Value.FirstOrDefault())}"));
-
-            if (string.IsNullOrEmpty(body))
-            {
-                request.EnableBuffering();
-                var stream = new StreamReader(request.Body, Encoding.UTF8);
-                body = stream.ReadToEnd();
-                request.Body.Position = 0;
-            }
-
+            var teamId = JsonConvert.DeserializeObject<SlackBaseEventBody>(body).TeamId;
+            
             var slackTime = request?.Headers["X-Slack-Request-Timestamp"];
             string expectedSignature = request?.Headers["X-Slack-Signature"];
             var receivedPayload = $"v0:{slackTime}:{body}";
 
             var payloadBytes = Encoding.UTF8.GetBytes(receivedPayload);
 
-            using var hmacSha256 = new HMACSHA256(Encoding.UTF8.GetBytes(_slackConfig.SlackTokens[teamDomain].SigningSecret));
+            using var hmacSha256 = new HMACSHA256(Encoding.UTF8.GetBytes(_authConfigurationRepository.GetTeamSigningSecretAsync(teamId)));
             var payloadHexString = $"v0={BitConverter.ToString(hmacSha256.ComputeHash(payloadBytes)).Replace("-", "")}";
             return expectedSignature.ToLower().Equals(payloadHexString, StringComparison.InvariantCultureIgnoreCase);
         }

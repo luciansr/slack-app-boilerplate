@@ -16,7 +16,7 @@ namespace Api.Controllers
     //catch all routes
     [Route("api/{*.}")]
     [ApiController]
-    [SlackAuthentication]
+    [SlackFormAuthentication]
     public class CatchAllController : ControllerBase
     {
         // /[command] *

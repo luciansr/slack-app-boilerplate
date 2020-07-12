@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Api.Auth;
 using Microsoft.AspNetCore.Mvc;
-using Models;
 using Models.Api;
 using Services;
 
@@ -11,7 +10,7 @@ namespace Api.Controllers
 {
     [Route("api/events")]
     [ApiController]
-    [SlackAuthentication]
+    [SlackJsonAuthentication]
     public class EventsController : ControllerBase
     {
         private readonly SlackEventProducer _slackEventProducer;

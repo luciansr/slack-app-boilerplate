@@ -2,16 +2,19 @@ using Newtonsoft.Json;
 
 namespace Models.Api
 {
-    public class SlackEventBody
+    public class SlackBaseEventBody
+    {
+        [JsonProperty("team_id")]
+        public string TeamId { get; set; }
+    }
+
+    public class SlackEventBody : SlackBaseEventBody
     {
         [JsonProperty("token")]
         public string Token { get; set; }
 
         [JsonProperty("challenge")]
         public string Challenge { get; set; }
-
-        [JsonProperty("team_id")]
-        public string TeamId { get; set; }
 
         [JsonProperty("api_app_id")]
         public string ApiAppId { get; set; }

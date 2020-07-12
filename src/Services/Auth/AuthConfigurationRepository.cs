@@ -1,4 +1,5 @@
 using System;
+using Models.Config;
 
 namespace Services.Auth
 {
@@ -9,26 +10,28 @@ namespace Services.Auth
         string GetTeamSigningSecretAsync(string teamDomain);
     }
 
-    public class AuthAuthConfigurationRepository : IAuthConfigurationRepository
+    public class AuthConfigurationRepository : IAuthConfigurationRepository
     {
-        public AuthAuthConfigurationRepository()
+        private readonly SlackConfig _slackConfig;
+
+        public AuthConfigurationRepository(SlackConfig slackConfig)
         {
-            
+            _slackConfig = slackConfig;
         }
         
         public string GetTeamTokenAsync(string teamDomain)
         {
-            throw new NotImplementedException();
+            return _slackConfig.SlackTokens[teamDomain].TeamToken;
         }
 
         public string GetTeamBotTokenAsync(string teamDomain)
         {
-            throw new NotImplementedException();
+            return _slackConfig.SlackTokens[teamDomain].BotToken;
         }
 
         public string GetTeamSigningSecretAsync(string teamDomain)
         {
-            throw new NotImplementedException();
+            return _slackConfig.SlackTokens[teamDomain].SigningSecret;
         }
     }
 }

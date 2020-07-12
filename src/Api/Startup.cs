@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Models.Config;
 using Services;
+using Services.Auth;
 using Services.BackgroundServices;
 using Services.Events.Actions;
 using Services.Events.Handlers;
@@ -52,6 +53,9 @@ namespace Api
             //event matchers
             services.AddSingleton<UnknownEventMatcher>();
             services.AddSingleton<TextContainsEventMatcher>();
+            
+            //auth
+            services.AddSingleton<IAuthConfigurationRepository, AuthConfigurationRepository>();
 
             BindSectionToConfigObject<SlackConfig>(Configuration, services);
         }

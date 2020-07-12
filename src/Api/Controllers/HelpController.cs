@@ -15,7 +15,7 @@ namespace Api.Controllers
     // /[command] help
     [Route("api/[controller]")]
     [ApiController]
-    [SlackAuthentication]
+    [SlackFormAuthentication]
     public class HelpController : ControllerBase
     {
         // /[command] help
