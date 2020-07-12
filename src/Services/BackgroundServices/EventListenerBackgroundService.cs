@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
@@ -31,6 +32,8 @@ namespace Services.BackgroundServices
                     await semaphoreSlim.WaitAsync(stoppingToken);
                     _ = HandleEventInBackground(slackEvent, semaphoreSlim, stoppingToken);
                 }
+
+                await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
             }
         }
 

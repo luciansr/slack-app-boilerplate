@@ -2,7 +2,6 @@
 using Clients.Slack;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Models.Config;
@@ -33,6 +32,7 @@ namespace Api
             services.AddSingleton<EventStorage>();
             
             services.AddHostedService<EventListenerBackgroundService>();
+            services.AddHostedService<ProcessingConfigurationBackgroundService>();
 
             services.AddSingleton<SlackEventHandler>();
             services.AddSingleton<ChannelMessageEventHandler>();
@@ -41,7 +41,7 @@ namespace Api
             services.AddSingleton<AppMentionEventHandler>();
             services.AddSingleton<ReactionAddedEventHandler>();
             services.AddSingleton<IEventProcessorProvider, EventProcessorProvider>();
-            
+            services.AddSingleton<IProcessingConfigurationStorage, FileProcessingStorage>();
 
             BindSectionToConfigObject<SlackConfig>(Configuration, services);
         }

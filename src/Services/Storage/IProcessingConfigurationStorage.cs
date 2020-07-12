@@ -5,7 +5,7 @@ using Models.Events;
 
 namespace Services.Storage
 {
-    public interface IEventProcessorStorage
+    public interface IProcessingConfigurationStorage
     {
         Task<Dictionary<string, TeamProcessingConfiguration>> GetEventProcessingConfigurationAsync(CancellationToken cancellationToken);
     }
