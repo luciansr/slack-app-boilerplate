@@ -7,10 +7,10 @@ namespace Services.EventHandlers
     public class UserJoinedEventHandler : BaseEventHandler
     {
         public UserJoinedEventHandler(
-            IEventProcessorStorage eventProcessorStorage)
+            IEventProcessorProvider eventProcessorProvider)
             : base(
                 SlackEventType.UserJoined,
-                eventProcessorStorage)
+                eventProcessorProvider)
         {
         }
     }

@@ -10,19 +10,19 @@ namespace Services.EventHandlers.Base
     public class BaseEventHandler : ISlackEventHandler
     {
         private readonly SlackEventType _slackEventType;
-        private readonly IEventProcessorStorage _eventProcessorStorage;
+        private readonly IEventProcessorProvider _eventProcessorProvider;
 
-        public BaseEventHandler(
+        protected BaseEventHandler(
             SlackEventType slackEventType,
-            IEventProcessorStorage eventProcessorStorage)
+            IEventProcessorProvider eventProcessorProvider)
         {
             _slackEventType = slackEventType;
-            _eventProcessorStorage = eventProcessorStorage;
+            _eventProcessorProvider = eventProcessorProvider;
         }
 
         public virtual async Task HandleSlackEventAsync(SlackEventBody slackEventBody, CancellationToken cancellationToken)
         {
-            var eventsProcessors = await _eventProcessorStorage.GetEventProcessors(
+            var eventsProcessors = _eventProcessorProvider.GetEventProcessors(
                 slackEventBody.TeamId, 
                 slackEventBody.Event.Channel,
                 _slackEventType, 

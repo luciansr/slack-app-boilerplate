@@ -7,10 +7,10 @@ namespace Services.EventHandlers
     public class AppMentionEventHandler : BaseEventHandler
     {
         public AppMentionEventHandler(
-            IEventProcessorStorage eventProcessorStorage)
+            IEventProcessorProvider eventProcessorProvider)
             : base(
                 SlackEventType.AppMention,
-                eventProcessorStorage)
+                eventProcessorProvider)
         {
         }
     }

@@ -4,6 +4,7 @@ using Microsoft.Extensions.Hosting;
 using Models;
 using Models.Api;
 using Services.EventHandlers;
+using Services.Storage;
 
 namespace Services.BackgroundServices
 {

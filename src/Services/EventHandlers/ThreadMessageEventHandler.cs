@@ -7,10 +7,10 @@ namespace Services.EventHandlers
     public class ThreadMessageEventHandler : BaseEventHandler
     {
         public ThreadMessageEventHandler(
-            IEventProcessorStorage eventProcessorStorage)
+            IEventProcessorProvider eventProcessorProvider)
             : base(
                 SlackEventType.Message,
-                eventProcessorStorage)
+                eventProcessorProvider)
         {
         }
     }

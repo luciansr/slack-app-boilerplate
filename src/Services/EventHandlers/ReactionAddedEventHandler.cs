@@ -7,10 +7,10 @@ namespace Services.EventHandlers
     public class ReactionAddedEventHandler : BaseEventHandler
     {
         public ReactionAddedEventHandler(
-            IEventProcessorStorage eventProcessorStorage)
+            IEventProcessorProvider eventProcessorProvider)
             : base(
                 SlackEventType.ReactionAdded,
-                eventProcessorStorage)
+                eventProcessorProvider)
         {
         }
     }

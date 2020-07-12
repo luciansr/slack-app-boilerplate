@@ -7,10 +7,10 @@ namespace Services.EventHandlers
     public class ChannelMessageEventHandler : BaseEventHandler
     {
         public ChannelMessageEventHandler(
-            IEventProcessorStorage eventProcessorStorage)
+            IEventProcessorProvider eventProcessorProvider)
             : base(
                 SlackEventType.Message,
-                eventProcessorStorage)
+                eventProcessorProvider)
         {
         }
     }

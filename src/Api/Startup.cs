@@ -10,6 +10,7 @@ using Services;
 using Services.BackgroundServices;
 using Services.EventHandlers;
 using Services.EventMatchers;
+using Services.Storage;
 
 namespace Api
 {
@@ -39,7 +40,7 @@ namespace Api
             services.AddSingleton<UserJoinedEventHandler>();
             services.AddSingleton<AppMentionEventHandler>();
             services.AddSingleton<ReactionAddedEventHandler>();
-            services.AddSingleton<IEventProcessorStorage, EventProcessorStorage>();
+            services.AddSingleton<IEventProcessorProvider, EventProcessorProvider>();
             
 
             BindSectionToConfigObject<SlackConfig>(Configuration, services);

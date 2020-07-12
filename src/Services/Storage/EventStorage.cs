@@ -2,10 +2,9 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Channels;
 using System.Threading.Tasks;
-using Models;
 using Models.Api;
 
-namespace Services
+namespace Services.Storage
 {
     public class EventStorage
     {
