@@ -9,7 +9,7 @@ namespace Models.Api
 
         [JsonProperty("challenge")]
         public string Challenge { get; set; }
-        
+
         [JsonProperty("team_id")]
         public string TeamId { get; set; }
 
@@ -36,26 +36,40 @@ namespace Models.Api
     {
         [JsonProperty("client_msg_id")]
         public string ClientMsgId { get; set; }
+
         [JsonProperty("type")]
         public string Type { get; set; }
+
+        [JsonProperty("subtype")]
+        public string Subtype { get; set; }
+
         [JsonProperty("text")]
         public string Text { get; set; }
+
         [JsonProperty("user")]
         public string User { get; set; }
+
         [JsonProperty("ts")]
-        public double Ts { get; set; }
+        public double MessageIdentifier { get; set; }
+
         [JsonProperty("team")]
         public string Team { get; set; }
+
         [JsonProperty("channel")]
         public string Channel { get; set; }
+
         [JsonProperty("event_ts")]
         public double EventTs { get; set; }
+
         [JsonProperty("channel_type")]
         public string ChannelType { get; set; }
+
         [JsonProperty("thread_ts")]
-        public double ThreadTs { get; set; }
+        public double? ThreadParentMessageIdentifier { get; set; }
+
         [JsonProperty("parent_user_id")]
         public string ParentUserId { get; set; }
+
         [JsonProperty("blocks")]
         public SlackEventBlock[] Blocks { get; set; }
     }
@@ -64,16 +78,19 @@ namespace Models.Api
     {
         [JsonProperty("type")]
         public string Type { get; set; }
+
         [JsonProperty("block_id")]
         public string BlockId { get; set; }
+
         [JsonProperty("elements")]
         public SlackEventBlockElement[] Elements { get; set; }
     }
-    
+
     public class SlackEventBlockElement
     {
         [JsonProperty("type")]
         public string Type { get; set; }
+
         [JsonProperty("elements")]
         public SlackEventBlockInnerElement[] Elements { get; set; }
     }
@@ -82,6 +99,7 @@ namespace Models.Api
     {
         [JsonProperty("type")]
         public string Type { get; set; }
+
         [JsonProperty("text")]
         public string Text { get; set; }
     }
