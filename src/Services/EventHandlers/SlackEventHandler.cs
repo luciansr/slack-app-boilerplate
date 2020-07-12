@@ -10,17 +10,20 @@ namespace Services.EventHandlers
         private readonly ChannelMessageEventHandler _channelMessageEventHandler;
         private readonly ThreadMessageEventHandler _threadMessageEventHandler;
         private readonly AppMentionEventHandler _appMentionEventHandler;
+        private readonly ReactionAddedEventHandler _reactionAddedEventHandler;
 
         public SlackEventHandler(
             UserJoinedEventHandler userJoinedEventHandler,
             ChannelMessageEventHandler channelMessageEventHandler,
             ThreadMessageEventHandler threadMessageEventHandler,
-            AppMentionEventHandler appMentionEventHandler)
+            AppMentionEventHandler appMentionEventHandler,
+            ReactionAddedEventHandler reactionAddedEventHandler)
         {
             _userJoinedEventHandler = userJoinedEventHandler;
             _channelMessageEventHandler = channelMessageEventHandler;
             _threadMessageEventHandler = threadMessageEventHandler;
             _appMentionEventHandler = appMentionEventHandler;
+            _reactionAddedEventHandler = reactionAddedEventHandler;
         }
 
         public Task HandleSlackEventAsync(
@@ -39,6 +42,8 @@ namespace Services.EventHandlers
                     => _threadMessageEventHandler.HandleSlackEventAsync(slackEventBody, cancellationToken),
                 { Event: {Type: "app_mention"} } 
                     => _appMentionEventHandler.HandleSlackEventAsync(slackEventBody, cancellationToken),
+                { Event: {Type: "reaction_added"} } 
+                    => _reactionAddedEventHandler.HandleSlackEventAsync(slackEventBody, cancellationToken),
                 _ => UnknownEvent(slackEventBody, cancellationToken)
             };
         }

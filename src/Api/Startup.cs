@@ -37,6 +37,7 @@ namespace Api
             services.AddSingleton<ThreadMessageEventHandler>();
             services.AddSingleton<UserJoinedEventHandler>();
             services.AddSingleton<AppMentionEventHandler>();
+            services.AddSingleton<ReactionAddedEventHandler>();
 
             BindSectionToConfigObject<SlackConfig>(Configuration, services);
         }
