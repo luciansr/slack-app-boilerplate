@@ -1,14 +1,17 @@
-using System.Threading;
-using System.Threading.Tasks;
-using Models.Api;
+using Models.Events;
+using Services.EventHandlers.Base;
+using Services.EventMatchers;
 
 namespace Services.EventHandlers
 {
-    public class UserJoinedEventHandler : ISlackEventHandler
+    public class UserJoinedEventHandler : BaseEventHandler
     {
-        public Task HandleSlackEventAsync(SlackEventBody slackEventBody, CancellationToken cancellationToken)
+        public UserJoinedEventHandler(
+            IEventProcessorStorage eventProcessorStorage)
+            : base(
+                SlackEventType.UserJoined,
+                eventProcessorStorage)
         {
-            throw new System.NotImplementedException();
         }
     }
 }
