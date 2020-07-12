@@ -19,6 +19,7 @@ namespace Services.BackgroundServices
             _configurationStorage = configurationStorage;
             _processorProvider = processorProvider;
         }
+
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
