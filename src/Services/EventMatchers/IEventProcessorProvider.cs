@@ -13,6 +13,6 @@ namespace Services.EventMatchers
             CancellationToken cancellationToken);
 
         void SaveEventProcessingConfiguration(
-            Dictionary<string, TeamEventProcessingConfiguration> eventProcessingConfigurations);
+            Dictionary<string, TeamProcessingConfiguration> eventProcessingConfigurations);
     }
 }

@@ -49,7 +49,7 @@ namespace Services.EventMatchers
         }
 
         public void SaveEventProcessingConfiguration(
-            Dictionary<string, TeamEventProcessingConfiguration> eventProcessingConfigurations)
+            Dictionary<string, TeamProcessingConfiguration> eventProcessingConfigurations)
         {
             throw new System.NotImplementedException();
         }

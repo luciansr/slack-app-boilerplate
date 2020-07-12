@@ -7,6 +7,6 @@ namespace Services.Storage
 {
     public interface IEventProcessorStorage
     {
-        Task<Dictionary<string, TeamEventProcessingConfiguration>> GetEventProcessingConfigurationAsync(CancellationToken cancellationToken);
+        Task<Dictionary<string, TeamProcessingConfiguration>> GetEventProcessingConfigurationAsync(CancellationToken cancellationToken);
     }
 }
