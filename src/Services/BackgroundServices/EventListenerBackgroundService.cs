@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Models;
 using Models.Api;
+using Services.EventHandlers;
 
 namespace Services.BackgroundServices
 {

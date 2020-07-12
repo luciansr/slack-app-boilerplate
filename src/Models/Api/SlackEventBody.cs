@@ -52,6 +52,10 @@ namespace Models.Api
         public double EventTs { get; set; }
         [JsonProperty("channel_type")]
         public string ChannelType { get; set; }
+        [JsonProperty("thread_ts")]
+        public double ThreadTs { get; set; }
+        [JsonProperty("parent_user_id")]
+        public string ParentUserId { get; set; }
         [JsonProperty("blocks")]
         public SlackEventBlock[] Blocks { get; set; }
     }
@@ -65,8 +69,16 @@ namespace Models.Api
         [JsonProperty("elements")]
         public SlackEventBlockElement[] Elements { get; set; }
     }
-
+    
     public class SlackEventBlockElement
+    {
+        [JsonProperty("type")]
+        public string Type { get; set; }
+        [JsonProperty("elements")]
+        public SlackEventBlockInnerElement[] Elements { get; set; }
+    }
+
+    public class SlackEventBlockInnerElement
     {
         [JsonProperty("type")]
         public string Type { get; set; }

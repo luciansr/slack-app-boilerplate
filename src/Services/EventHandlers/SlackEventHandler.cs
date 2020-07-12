@@ -1,9 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
-using Models;
 using Models.Api;
 
-namespace Services
+namespace Services.EventHandlers
 {
     public class SlackEventHandler
     {

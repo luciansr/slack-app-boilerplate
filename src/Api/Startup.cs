@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Models.Config;
 using Services;
 using Services.BackgroundServices;
+using Services.EventHandlers;
 
 namespace Api
 {
