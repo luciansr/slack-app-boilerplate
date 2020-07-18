@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using Microsoft.VisualBasic;
 using Models.Events;
 using Services.Events.Actions;
 using Services.Events.Matchers;
@@ -13,7 +14,7 @@ namespace Services.Events.Processors
         private readonly AnswerMessageActionExecutor _answerMessageActionExecutor;
         private readonly UnknownEventMatcher _unknownEventMatcher;
         private readonly TextContainsEventMatcher _textContainsEventMatcher;
-        private readonly Dictionary<string, Dictionary<string, EventProcessor[]>> _eventProcessors;
+        private SlackProcessingState _eventProcessors;
 
         public EventProcessorProvider(
             UnknownActionExecutor unknownActionExecutor,
@@ -25,7 +26,6 @@ namespace Services.Events.Processors
             _answerMessageActionExecutor = answerMessageActionExecutor;
             _unknownEventMatcher = unknownEventMatcher;
             _textContainsEventMatcher = textContainsEventMatcher;
-            _eventProcessors = new Dictionary<string, Dictionary<string, EventProcessor[]>>();
         }
         
         public EventProcessor[] GetEventProcessors(
@@ -36,26 +36,65 @@ namespace Services.Events.Processors
         {
             var result = new EventProcessor[0];
 
-            if (_eventProcessors != null
-                && _eventProcessors.TryGetValue(teamId, out var channelEventProcessors))
+            if (_eventProcessors?.TeamConfigurations != null
+                && _eventProcessors.TeamConfigurations.TryGetValue(teamId, out var teamEventProcessors))
             {
-                if (channelEventProcessors != null)
+                return GetEventProcessorsForChannel(channelId, slackEventType, teamEventProcessors);
+            }
+
+            return result;
+        }
+        
+        private EventProcessor[] GetEventProcessorsForChannel(string channelId, SlackEventType slackEventType, TeamProcessingConfiguration<EventProcessor> eventProcessors)
+        {
+            var result = new EventProcessor[0];
+
+            if (eventProcessors?.ChannelConfigurations == null)
+            {
+                return result;
+            }
+
+            if (eventProcessors.ChannelConfigurations.TryGetValue(channelId, out var ownEventProcessors))
+            {
+                if (ownEventProcessors != null)
                 {
-                    if (channelEventProcessors.TryGetValue(channelId, out var ownEventProcessors))
-                    {
-                        if (ownEventProcessors != null)
-                        {
-                            result = result.Concat(ownEventProcessors).ToArray();
-                        }
-                    }
+                    result = result.Concat(GetEventProcessorsForSlackEventType(slackEventType, ownEventProcessors)).ToArray();
+                }
+            }
                     
-                    if (channelEventProcessors.TryGetValue("*", out var genericEventProcessors))
-                    {
-                        if (ownEventProcessors != null)
-                        {
-                            result = result.Concat(genericEventProcessors).ToArray();
-                        }
-                    }
+            if (eventProcessors.ChannelConfigurations.TryGetValue("*", out var genericEventProcessors))
+            {
+                if (ownEventProcessors != null)
+                {
+                    result = result.Concat(GetEventProcessorsForSlackEventType(slackEventType, genericEventProcessors)).ToArray();
+                }
+            }
+
+            return result;
+        }
+
+        private EventProcessor[] GetEventProcessorsForSlackEventType(SlackEventType slackEventType, ChannelProcessingConfiguration<EventProcessor> eventProcessors)
+        {
+            var result = new EventProcessor[0];
+
+            if (eventProcessors?.EventConfigurations == null)
+            {
+                return result;
+            }
+
+            if (eventProcessors.EventConfigurations.TryGetValue(slackEventType.ToString(), out var ownEventProcessors))
+            {
+                if (ownEventProcessors != null)
+                {
+                    result = result.Concat(ownEventProcessors).ToArray();
+                }
+            }
+                    
+            if (eventProcessors.EventConfigurations.TryGetValue("*", out var genericEventProcessors))
+            {
+                if (ownEventProcessors != null)
+                {
+                    result = result.Concat(genericEventProcessors).ToArray();
                 }
             }
 
@@ -63,39 +102,37 @@ namespace Services.Events.Processors
         }
 
         public void SaveEventProcessingConfiguration(
-            Dictionary<string, TeamProcessingConfiguration> eventProcessingConfigurations)
+            SlackProcessingConfiguration slackProcessingConfigurations)
         {
-            if (eventProcessingConfigurations == null)
+            if (slackProcessingConfigurations == null)
             {
                 return;
             }
 
-            var newEventProcessors = new Dictionary<string, Dictionary<string, EventProcessor[]>>();
-            
-            foreach (var item in eventProcessingConfigurations)
+            var slackProcessingState = new SlackProcessingState
             {
-                newEventProcessors.Add(item.Key, new Dictionary<string, EventProcessor[]>());
+                TeamConfigurations = slackProcessingConfigurations?.TeamConfigurations
+                    .ToDictionary(
+                        x => x.Key, 
+                        x => new TeamProcessingConfiguration<EventProcessor>
+                        {
+                            ChannelConfigurations = x.Value.ChannelConfigurations?.ToDictionary(
+                                y => y.Key,
+                                y => new ChannelProcessingConfiguration<EventProcessor>
+                                {
+                                    EventConfigurations = y.Value.EventConfigurations?.ToDictionary(
+                                        z => z.Key,
+                                        z => z.Value.Select(GetEventProcessor).ToArray()
+                                        )
+                                }
+                                )
+                        })
+            };
 
-                if (item.Value.ChannelConfigurations == null)
-                {
-                    continue;
-                }
-
-                foreach (var channelItem in item.Value.ChannelConfigurations)
-                {
-                    var eventProcessors = new EventProcessor[channelItem.Value.Length];
-
-                    for (var i = 0; i < channelItem.Value.Length; i++)
-                    {
-                        eventProcessors[i] = GetEventProcessor(channelItem.Value[i]);
-                    }
-
-                    newEventProcessors[item.Key].Add(channelItem.Key, eventProcessors);
-                }
-            }
+            _eventProcessors = slackProcessingState;
         }
 
-        private EventProcessor GetEventProcessor(ChannelProcessingConfiguration processingConfiguration)
+        private EventProcessor GetEventProcessor(ProcessingConfiguration processingConfiguration)
         {
             return new EventProcessor(GetEventMatcher(processingConfiguration.Match), GetActionExecutor(processingConfiguration.Action));
         }

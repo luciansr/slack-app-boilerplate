@@ -13,6 +13,6 @@ namespace Services.Events.Processors
             CancellationToken cancellationToken);
 
         void SaveEventProcessingConfiguration(
-            Dictionary<string, TeamProcessingConfiguration> eventProcessingConfigurations);
+            SlackProcessingConfiguration slackProcessingConfigurations);
     }
 }

@@ -5,15 +5,30 @@ using Newtonsoft.Json.Converters;
 
 namespace Models.Events
 {
-    public class TeamProcessingConfiguration
+    public class SlackProcessingConfiguration : BaseSlackProcessingConfiguration<ProcessingConfiguration>
     {
-        [JsonProperty("teamId")]
-        public string TeamId { get; set; }
-        [JsonProperty("channelConfigurations")]
-        public Dictionary<string, ChannelProcessingConfiguration[]> ChannelConfigurations { get; set; }
+        
     }
 
-    public class ChannelProcessingConfiguration
+    public class BaseSlackProcessingConfiguration<TEventConfiguration>
+    {
+        [JsonProperty("teamConfigurations")]
+        public Dictionary<string, TeamProcessingConfiguration<TEventConfiguration>> TeamConfigurations { get; set; }
+    }
+    
+    public class TeamProcessingConfiguration<TEventConfiguration>
+    {
+        [JsonProperty("channelConfigurations")]
+        public Dictionary<string, ChannelProcessingConfiguration<TEventConfiguration>> ChannelConfigurations { get; set; }
+    }
+    
+    public class ChannelProcessingConfiguration<TEventConfiguration>
+    {
+        [JsonProperty("eventConfigurations")]
+        public Dictionary<string, TEventConfiguration[]> EventConfigurations { get; set; }
+    }
+
+    public class ProcessingConfiguration
     {
         [JsonProperty("match")]
         public EventMatchConfiguration Match { get; set; }
