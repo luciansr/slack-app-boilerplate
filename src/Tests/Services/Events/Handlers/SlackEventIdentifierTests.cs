@@ -2,7 +2,6 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Models.Api;
 using Models.Events;
 using Moq;
 using Newtonsoft.Json;

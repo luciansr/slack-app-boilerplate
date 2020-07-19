@@ -53,11 +53,10 @@ namespace Api
             //action executors
             services.AddSingleton<AnswerMessageActionExecutor>();
             services.AddSingleton<UnknownActionExecutor>();
-            
-            //event matchers
-            services.AddSingleton<UnknownEventMatcher>();
-            services.AddSingleton<TextContainsEventMatcher>();
-            
+
+            services.AddSingleton<IEventMatcherFactory, EventMatcherFactory>();
+            services.AddSingleton<IActionExecutorFactory, ActionExecutorFactory>();
+
             //auth
             services.AddSingleton<IAuthConfigurationRepository, AuthConfigurationRepository>();
 

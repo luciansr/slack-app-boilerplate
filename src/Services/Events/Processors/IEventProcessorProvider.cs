@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Threading;
 using Models.Events;
 
 namespace Services.Events.Processors
@@ -9,8 +7,7 @@ namespace Services.Events.Processors
         EventProcessor[] GetEventProcessors(
             string teamId,
             string channelId,
-            SlackEventType slackEventType,
-            CancellationToken cancellationToken);
+            SlackEventType slackEventType);
 
         void SaveEventProcessingConfiguration(
             SlackProcessingConfiguration slackProcessingConfigurations);

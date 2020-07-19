@@ -25,8 +25,7 @@ namespace Services.Events.Handlers.Base
             var eventsProcessors = _eventProcessorProvider.GetEventProcessors(
                 slackEventBody.TeamId, 
                 slackEventBody.Event.Channel,
-                _slackEventType, 
-                cancellationToken);
+                _slackEventType);
 
             await Task.WhenAll(
                 eventsProcessors.Select(

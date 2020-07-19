@@ -8,7 +8,13 @@ namespace Models.Events
 
     public class EventMatchItem
     {
-        public EventMatchItem Type { get; set; }
+        public EventMatchItem(EventMatchItemType type, string data)
+        {
+            Type = type;
+            Data = data;
+        }
+        
+        public EventMatchItemType Type { get; set; }
         public string Data { get; set; }
     }
 

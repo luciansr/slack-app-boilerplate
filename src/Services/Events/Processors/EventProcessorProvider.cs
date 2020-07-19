@@ -1,38 +1,24 @@
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using Microsoft.VisualBasic;
 using Models.Events;
-using Services.Events.Actions;
-using Services.Events.Matchers;
 
 namespace Services.Events.Processors
 {
     public class EventProcessorProvider : IEventProcessorProvider
     {
-        private readonly UnknownActionExecutor _unknownActionExecutor;
-        private readonly AnswerMessageActionExecutor _answerMessageActionExecutor;
-        private readonly UnknownEventMatcher _unknownEventMatcher;
-        private readonly TextContainsEventMatcher _textContainsEventMatcher;
+        private readonly IEventMatcherFactory _eventMatcherFactory;
+        private readonly IActionExecutorFactory _actionExecutorFactory;
         private SlackProcessingState _eventProcessors;
 
-        public EventProcessorProvider(
-            UnknownActionExecutor unknownActionExecutor,
-            AnswerMessageActionExecutor answerMessageActionExecutor,
-            UnknownEventMatcher unknownEventMatcher,
-            TextContainsEventMatcher textContainsEventMatcher)
+        public EventProcessorProvider(IEventMatcherFactory eventMatcherFactory, IActionExecutorFactory actionExecutorFactory)
         {
-            _unknownActionExecutor = unknownActionExecutor;
-            _answerMessageActionExecutor = answerMessageActionExecutor;
-            _unknownEventMatcher = unknownEventMatcher;
-            _textContainsEventMatcher = textContainsEventMatcher;
+            _eventMatcherFactory = eventMatcherFactory;
+            _actionExecutorFactory = actionExecutorFactory;
         }
-        
+
         public EventProcessor[] GetEventProcessors(
-            string teamId, 
-            string channelId, 
-            SlackEventType slackEventType, 
-            CancellationToken cancellationToken)
+            string teamId,
+            string channelId,
+            SlackEventType slackEventType)
         {
             var result = new EventProcessor[0];
 
@@ -44,7 +30,7 @@ namespace Services.Events.Processors
 
             return result;
         }
-        
+
         private EventProcessor[] GetEventProcessorsForChannel(string channelId, SlackEventType slackEventType, TeamProcessingConfiguration<EventProcessor> eventProcessors)
         {
             var result = new EventProcessor[0];
@@ -61,7 +47,7 @@ namespace Services.Events.Processors
                     result = result.Concat(GetEventProcessorsForSlackEventType(slackEventType, ownEventProcessors)).ToArray();
                 }
             }
-                    
+
             if (eventProcessors.ChannelConfigurations.TryGetValue("*", out var genericEventProcessors))
             {
                 if (ownEventProcessors != null)
@@ -89,7 +75,7 @@ namespace Services.Events.Processors
                     result = result.Concat(ownEventProcessors).ToArray();
                 }
             }
-                    
+
             if (eventProcessors.EventConfigurations.TryGetValue("*", out var genericEventProcessors))
             {
                 if (ownEventProcessors != null)
@@ -113,7 +99,7 @@ namespace Services.Events.Processors
             {
                 TeamConfigurations = slackProcessingConfigurations?.TeamConfigurations
                     .ToDictionary(
-                        x => x.Key, 
+                        x => x.Key,
                         x => new TeamProcessingConfiguration<EventProcessor>
                         {
                             ChannelConfigurations = x.Value.ChannelConfigurations?.ToDictionary(
@@ -123,9 +109,9 @@ namespace Services.Events.Processors
                                     EventConfigurations = y.Value.EventConfigurations?.ToDictionary(
                                         z => z.Key,
                                         z => z.Value.Select(GetEventProcessor).ToArray()
-                                        )
+                                    )
                                 }
-                                )
+                            )
                         })
             };
 
@@ -134,24 +120,8 @@ namespace Services.Events.Processors
 
         private EventProcessor GetEventProcessor(ProcessingConfiguration processingConfiguration)
         {
-            return new EventProcessor(GetEventMatcher(processingConfiguration.Match), GetActionExecutor(processingConfiguration.Action));
-        }
-        
-        private IEventMatcher GetEventMatcher(EventMatchConfiguration matchConfiguration)
-        {
-            return matchConfiguration switch  {
-                {Type: MatchType.TextContains} => _textContainsEventMatcher,
-                _ => _unknownEventMatcher
-            };
-        }
-
-        private IActionExecutor GetActionExecutor(ActionConfiguration actionConfiguration)
-        {
-            return actionConfiguration switch
-            {
-                {Type: ActionType.AnswerToMessage} => _answerMessageActionExecutor,
-                _ => _unknownActionExecutor
-            };
+            return new EventProcessor(
+                _eventMatcherFactory.GetEventMatcher(processingConfiguration.Match), _actionExecutorFactory.GetActionExecutor(processingConfiguration.Action));
         }
     }
 }
