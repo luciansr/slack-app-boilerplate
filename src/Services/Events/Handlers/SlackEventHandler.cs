@@ -19,13 +19,13 @@ namespace Services.Events.Handlers
     {
         private readonly IEventProcessorProvider _eventProcessorProvider;
 
-        protected SlackEventHandler(
+        public SlackEventHandler(
             IEventProcessorProvider eventProcessorProvider)
         {
             _eventProcessorProvider = eventProcessorProvider;
         }
 
-        public virtual async Task HandleSlackEventAsync(
+        public async Task HandleSlackEventAsync(
             SlackEventType slackEventType, SlackEventBody slackEventBody, CancellationToken cancellationToken)
         {
             var eventsProcessors = _eventProcessorProvider.GetEventProcessors(

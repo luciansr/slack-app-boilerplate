@@ -45,10 +45,6 @@ namespace Api
             services.AddSingleton<IEventProcessorProvider, EventProcessorProvider>();
             services.AddSingleton<IProcessingConfigurationStorage, FileProcessingStorage>();
             
-            //action executors
-            services.AddSingleton<AnswerMessageActionExecutor>();
-            services.AddSingleton<UnknownActionExecutor>();
-
             services.AddSingleton<IEventMatcherFactory, EventMatcherFactory>();
             services.AddSingleton<IActionExecutorFactory, ActionExecutorFactory>();
 
