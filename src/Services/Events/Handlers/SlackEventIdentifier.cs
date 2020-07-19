@@ -32,7 +32,7 @@ namespace Services.Events.Handlers
                 { Event: {Type: "message", ParentUserId: null, ThreadParentMessageIdentifier: null} }
                     => _slackEventHandler.HandleSlackEventAsync(SlackEventType.Message, slackEventBody, cancellationToken),
                 { Event: {Type: "message"} }
-                when slackEventBody.Event.ThreadParentMessageIdentifier.HasValue
+                when slackEventBody.Event.ThreadParentMessageIdentifier != null
                      && !string.IsNullOrEmpty(slackEventBody.Event.ParentUserId)
                     => _slackEventHandler.HandleSlackEventAsync(SlackEventType.ThreadMessage, slackEventBody, cancellationToken),
                 { Event: {Type: "app_mention"} }

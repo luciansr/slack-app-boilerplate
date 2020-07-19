@@ -15,6 +15,18 @@
                   "value": "Hello, Human!"
                 }
               }
+            ],
+            "ThreadMessage": [
+              {
+                "match": {
+                  "type": "TextContains",
+                  "target": "Hello world, bot!"
+                },
+                "action": {
+                  "type": "AnswerToMessage",
+                  "value": "Hello, Human!"
+                }
+              }
             ]
           }
         }

@@ -53,7 +53,7 @@ namespace Models.Api
         public string User { get; set; }
 
         [JsonProperty("ts")]
-        public double MessageIdentifier { get; set; }
+        public string MessageIdentifier { get; set; }
 
         [JsonProperty("team")]
         public string Team { get; set; }
@@ -68,7 +68,7 @@ namespace Models.Api
         public string ChannelType { get; set; }
 
         [JsonProperty("thread_ts")]
-        public double? ThreadParentMessageIdentifier { get; set; }
+        public string ThreadParentMessageIdentifier { get; set; }
 
         [JsonProperty("parent_user_id")]
         public string ParentUserId { get; set; }
