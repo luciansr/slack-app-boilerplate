@@ -12,9 +12,10 @@ namespace Services.Events.Processors
     {
         public IEventMatcher GetEventMatcher(EventMatchConfiguration matchConfiguration)
         {
-            return matchConfiguration switch
+            return matchConfiguration.Type switch
             {
-                {Type: MatchType.TextContains} => new TextContainsEventMatcher(matchConfiguration.Target),
+                MatchType.TextContains => new TextContainsEventMatcher(matchConfiguration.Target),
+                MatchType.CaseSensitiveTextContains => new CaseSensitiveTextContainsEventMatcher(matchConfiguration.Target),
                 _ => new UnknownEventMatcher()
             };
         }

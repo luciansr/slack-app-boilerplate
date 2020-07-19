@@ -10,6 +10,7 @@ namespace Tests.Services.Events.Processors
     {
         [Theory]
         [InlineData(MatchType.TextContains, typeof(TextContainsEventMatcher))]
+        [InlineData(MatchType.CaseSensitiveTextContains, typeof(CaseSensitiveTextContainsEventMatcher))]
         public void ProviderCreatesCorrectMatchers(MatchType matchConfiguration, Type eventMatcherType)
         {
             var eventMatcherFactory = new EventMatcherFactory();

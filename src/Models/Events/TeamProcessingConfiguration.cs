@@ -47,8 +47,10 @@ namespace Models.Events
     [JsonConverter(typeof(StringEnumConverter))]
     public enum MatchType
     {
-        [EnumMember(Value = "TextContains")]
+        [EnumMember(Value = nameof(TextContains))]
         TextContains,
+        [EnumMember(Value = nameof(CaseSensitiveTextContains))]
+        CaseSensitiveTextContains,
     }
     
     public class ActionConfiguration
