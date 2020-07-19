@@ -22,7 +22,7 @@ namespace Api.Controllers
         [HttpPost]
         //catch all routes
         [Route("{*.}")]
-        public async Task<IActionResult> Post([FromServices]SlackClient slackClient, [FromForm]SlackRequest slackRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> Post([FromServices]ISlackClient slackClient, [FromForm]SlackRequest slackRequest, CancellationToken cancellationToken)
         {
             await slackClient.PostOnChannelAsync(slackRequest.TeamDomain, slackRequest.ChannelId, "command [help]", cancellationToken);
             return Ok(new SlackResponse

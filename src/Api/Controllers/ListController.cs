@@ -23,7 +23,7 @@ namespace Api.Controllers
         [HttpPost]
         //catch all routes
         [Route("{*.}")] 
-        public async Task<IActionResult> Post([FromServices]SlackClient slackClient, [FromForm]SlackRequest slackRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> Post([FromServices]ISlackClient slackClient, [FromForm]SlackRequest slackRequest, CancellationToken cancellationToken)
         {
             await slackClient.PostOnChannelAsync(slackRequest.TeamDomain, slackRequest.ChannelId, "command [list]", cancellationToken);
             return Ok(new SlackResponse
@@ -36,7 +36,7 @@ namespace Api.Controllers
         // /[command] list help [extra parameters from slack]
         [HttpPost]
         [Route("help")]
-        public async Task<IActionResult> Help([FromServices]SlackClient slackClient, [FromForm]SlackRequest slackRequest, [FromQuery]string extraParameters, CancellationToken cancellationToken)
+        public async Task<IActionResult> Help([FromServices]ISlackClient slackClient, [FromForm]SlackRequest slackRequest, [FromQuery]string extraParameters, CancellationToken cancellationToken)
         {
             await slackClient.PostOnChannelAsync(slackRequest.TeamDomain, slackRequest.ChannelId, $"command [list help] parameters: [{extraParameters}]", cancellationToken);
             return Ok(new SlackResponse

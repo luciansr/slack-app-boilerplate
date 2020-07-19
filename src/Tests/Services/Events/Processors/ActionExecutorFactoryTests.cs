@@ -1,7 +1,9 @@
 using System;
 using Models.Events;
+using Moq;
 using Services.Events.Actions;
 using Services.Events.Processors;
+using Services.Slack;
 using Xunit;
 
 namespace Tests.Services.Events.Processors
@@ -12,7 +14,9 @@ namespace Tests.Services.Events.Processors
         [InlineData(ActionType.AnswerToMessage, typeof(AnswerMessageActionExecutor))]
         public void ProviderCreatesCorrectMatchers(ActionType actionType, Type eventMatcherType)
         {
-            var actionExecutorFactory = new ActionExecutorFactory();
+            var slackClientMock = new Mock<ISlackClient>();
+            
+            var actionExecutorFactory = new ActionExecutorFactory(slackClientMock.Object);
 
             var actionExecutor = actionExecutorFactory.GetActionExecutor(
                 new ActionConfiguration

@@ -19,6 +19,9 @@ namespace Services.Slack
 
         [JsonProperty("channel")]
         public string Channel { get; set; }
+        
+        [JsonProperty("thread_ts")]
+        public double? ParentMessage { get; set; }
     }
 
     public class SlackClientResponse
@@ -27,7 +30,13 @@ namespace Services.Slack
         public bool Ok { get; set; }
     }
 
-    public class SlackClient : RestClient
+    public interface ISlackClient
+    {
+        Task PostOnChannelAsync(string teamDomain, string channelId, string message, CancellationToken cancellationToken);
+        Task ReplyToMessageAsync(string teamDomain, string channelId, double? parentMessage, string message, CancellationToken cancellationToken);
+    }
+
+    public class SlackClient : RestClient, ISlackClient
     {
         private readonly IAuthConfigurationRepository _authRepository;
 
@@ -37,7 +46,12 @@ namespace Services.Slack
             _authRepository = authRepository;
         }
 
-        public async Task PostOnChannelAsync(string teamDomain, string channelId, string message, CancellationToken cancellationToken)
+        public Task PostOnChannelAsync(string teamDomain, string channelId, string message, CancellationToken cancellationToken)
+        {
+            return ReplyToMessageAsync(teamDomain, channelId, null, message, cancellationToken);
+        }
+        
+        public async Task ReplyToMessageAsync(string teamDomain, string channelId, double? parentMessage, string message, CancellationToken cancellationToken)
         {
             var token = _authRepository.GetTeamBotTokenAsync(teamDomain);
             var response = await PostAsJsonAsync(
@@ -45,7 +59,8 @@ namespace Services.Slack
                 new SlackPostToChannelRequest
                 {
                     Channel = channelId,
-                    Text = message
+                    Text = message,
+                    ParentMessage = parentMessage
                 },
                 cancellationToken,
                 new Dictionary<string, string>

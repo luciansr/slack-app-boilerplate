@@ -21,7 +21,7 @@ namespace Api.Controllers
     {
         // /[command] *
         [HttpPost]
-        public async Task<IActionResult> Post([FromServices]SlackClient slackClient, [FromForm]SlackRequest slackRequest, CancellationToken cancellationToken)
+        public async Task<IActionResult> Post([FromServices]ISlackClient slackClient, [FromForm]SlackRequest slackRequest, CancellationToken cancellationToken)
         {
             await slackClient.PostOnChannelAsync(slackRequest.TeamDomain, slackRequest.ChannelId, "command [not_found]", cancellationToken);
             return Ok(new SlackResponse

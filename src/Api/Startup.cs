@@ -32,7 +32,7 @@ namespace Api
         {
             services.AddControllers().AddNewtonsoftJson();
 
-            services.AddHttpClient<SlackClient>();
+            services.AddHttpClient<ISlackClient, SlackClient>();
             services.AddSingleton<SlackEventProducer>();
             services.AddSingleton<EventStorage>();
             
