@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Models.Api;
 using Models.Events;
@@ -17,7 +18,8 @@ namespace Services.Events.Matchers
         {
             var result = new EventMatchResult
             {
-                Success = slackEventBody?.Event?.Text?.Contains(_target) ?? false
+                Success = _target != null &&
+                          (slackEventBody?.Event?.Text?.Contains(_target, StringComparison.OrdinalIgnoreCase) ?? false)
             };
 
             if (result.Success)

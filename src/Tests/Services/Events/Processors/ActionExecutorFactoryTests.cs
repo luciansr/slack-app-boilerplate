@@ -1,7 +1,6 @@
 using System;
 using Models.Events;
 using Services.Events.Actions;
-using Services.Events.Matchers;
 using Services.Events.Processors;
 using Xunit;
 

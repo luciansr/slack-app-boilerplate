@@ -17,7 +17,11 @@ namespace Tests.Services.Events.Matchers
     {
         [Theory]
         [InlineData("<@UKMARFXLH> oi", "oi", true)]
-        public async Task MessageOnChannel_IsRoutedCorrectly(string inputText, string oi, bool expected)
+        [InlineData("<@UKMARFXLH> OI", "oi", true)]
+        [InlineData("<@UKMARFXLH> OI", null, false)]
+        [InlineData(null, "teste", false)]
+        [InlineData(null, null, false)]
+        public async Task MessageOnChannel_IsRoutedCorrectly(string inputText, string target, bool expected)
         {
             var slackBody = new SlackEventBody
             {
@@ -27,7 +31,7 @@ namespace Tests.Services.Events.Matchers
                 }
             };
 
-            var eventMatcher = new TextContainsEventMatcher("");
+            var eventMatcher = new TextContainsEventMatcher(target);
 
             var result = await eventMatcher.EventMatchesAsync(slackBody);
 
