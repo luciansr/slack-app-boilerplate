@@ -1,6 +1,6 @@
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
-using System.Threading.Channels;
 using System.Threading.Tasks;
 using Models.Api;
 
@@ -8,24 +8,30 @@ namespace Services.Storage
 {
     public class EventStorage
     {
-        private readonly Channel<SlackEventBody> _slackEvents;
+        private readonly ConcurrentDictionary<string, SlackEventBody> _slackConcurrentEvents;
 
         public EventStorage()
         {
-            _slackEvents = Channel.CreateUnbounded<SlackEventBody>();
+            _slackConcurrentEvents = new ConcurrentDictionary<string, SlackEventBody>();
         }
 
         public async Task StoreEventAsync(
             SlackEventBody slackEvent, 
             CancellationToken cancellationToken)
         {
-            await _slackEvents.Writer.WriteAsync(slackEvent, cancellationToken);
+            _slackConcurrentEvents[slackEvent.EventId] = slackEvent;
         }
 
-        public IAsyncEnumerable<SlackEventBody> ConsumeAllEventsAsync(
+        public async IAsyncEnumerable<SlackEventBody> ConsumeAllEventsAsync(
             CancellationToken cancellationToken)
         {
-            return _slackEvents.Reader.ReadAllAsync(cancellationToken);
+            foreach (var key in _slackConcurrentEvents.Keys)
+            {
+                if(_slackConcurrentEvents.TryRemove(key, out var slackEventBody))
+                {
+                    yield return slackEventBody;
+                }
+            }
         }
     }
 }
