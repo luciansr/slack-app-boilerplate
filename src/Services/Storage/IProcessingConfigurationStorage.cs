@@ -7,6 +7,6 @@ namespace Services.Storage
 {
     public interface IProcessingConfigurationStorage
     {
-        Task<Dictionary<string, TeamProcessingConfiguration>> GetEventProcessingConfigurationAsync(CancellationToken cancellationToken);
+        Task<SlackProcessingConfiguration> GetEventProcessingConfigurationAsync(CancellationToken cancellationToken);
     }
 }

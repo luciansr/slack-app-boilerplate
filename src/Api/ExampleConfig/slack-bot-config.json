@@ -1,18 +1,24 @@
 {
-  "TKVHCH21L": {
-    "CKTDE9BHB": {
-      "Message": [
-        {
-          "match": {
-            "type": "TextContains",
-            "target": "Hello world, bot!"
-          },
-          "action": {
-            "type": "AnswerToMessage",
-            "value": "Hello, Human!"
+  "teamConfigurations": {
+    "TKVHCH21L": {
+      "channelConfigurations": {
+        "CKTDE9BHB": {
+          "eventConfigurations": {
+            "Message": [
+              {
+                "match": {
+                  "type": "TextContains",
+                  "target": "Hello world, bot!"
+                },
+                "action": {
+                  "type": "AnswerToMessage",
+                  "value": "Hello, Human!"
+                }
+              }
+            ]
           }
         }
-      ]
+      }
     }
   }
 }

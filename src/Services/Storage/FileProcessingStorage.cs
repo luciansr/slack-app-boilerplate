@@ -9,12 +9,12 @@ namespace Services.Storage
 {
     public class FileProcessingStorage : IProcessingConfigurationStorage
     {
-        public Task<Dictionary<string, TeamProcessingConfiguration>> GetEventProcessingConfigurationAsync(
+        public Task<SlackProcessingConfiguration> GetEventProcessingConfigurationAsync(
             CancellationToken cancellationToken)
         {
             var allLines = File.ReadAllLines("./ExampleConfig/slack-bot-config.json");
             return Task.FromResult(
-                JsonConvert.DeserializeObject<Dictionary<string, TeamProcessingConfiguration>>(
+                JsonConvert.DeserializeObject<SlackProcessingConfiguration>(
                     string.Join(string.Empty, allLines)));
         }
     }
