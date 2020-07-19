@@ -14,11 +14,11 @@ namespace Services.Events.Handlers
 
     public class SlackEventIdentifier : ISlackEventIdentifier
     {
-        private readonly ISlackEventHandlerRouter _slackEventHandlerRouter;
+        private readonly ISlackEventHandler _slackEventHandler;
 
-        public SlackEventIdentifier(ISlackEventHandlerRouter slackEventHandlerRouter)
+        public SlackEventIdentifier(ISlackEventHandler slackEventHandler)
         {
-            _slackEventHandlerRouter = slackEventHandlerRouter;
+            _slackEventHandler = slackEventHandler;
         }
 
         public Task IdentifySlackEventAsync(
@@ -28,18 +28,18 @@ namespace Services.Events.Handlers
             return slackEventBody switch
             {
                 { Event: {Type: "message", Subtype: "channel_join"} }
-                    => _slackEventHandlerRouter.RouteSlackEventAsync(SlackEventType.ChannelJoin, slackEventBody, cancellationToken),
+                    => _slackEventHandler.HandleSlackEventAsync(SlackEventType.ChannelJoin, slackEventBody, cancellationToken),
                 { Event: {Type: "message", ParentUserId: null, ThreadParentMessageIdentifier: null} }
-                    => _slackEventHandlerRouter.RouteSlackEventAsync(SlackEventType.Message, slackEventBody, cancellationToken),
+                    => _slackEventHandler.HandleSlackEventAsync(SlackEventType.Message, slackEventBody, cancellationToken),
                 { Event: {Type: "message"} }
                 when slackEventBody.Event.ThreadParentMessageIdentifier.HasValue
                      && !string.IsNullOrEmpty(slackEventBody.Event.ParentUserId)
-                    => _slackEventHandlerRouter.RouteSlackEventAsync(SlackEventType.ThreadMessage, slackEventBody, cancellationToken),
+                    => _slackEventHandler.HandleSlackEventAsync(SlackEventType.ThreadMessage, slackEventBody, cancellationToken),
                 { Event: {Type: "app_mention"} }
-                    => _slackEventHandlerRouter.RouteSlackEventAsync(SlackEventType.AppMention, slackEventBody, cancellationToken),
+                    => _slackEventHandler.HandleSlackEventAsync(SlackEventType.AppMention, slackEventBody, cancellationToken),
                 { Event: {Type: "reaction_added"} }
-                    => _slackEventHandlerRouter.RouteSlackEventAsync(SlackEventType.ReactionAdded, slackEventBody, cancellationToken),
-                _ => _slackEventHandlerRouter.RouteSlackEventAsync(SlackEventType.Unknown, slackEventBody, cancellationToken),
+                    => _slackEventHandler.HandleSlackEventAsync(SlackEventType.ReactionAdded, slackEventBody, cancellationToken),
+                _ => _slackEventHandler.HandleSlackEventAsync(SlackEventType.Unknown, slackEventBody, cancellationToken),
             };
         }
     }

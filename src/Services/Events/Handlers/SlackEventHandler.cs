@@ -5,27 +5,33 @@ using Models.Api;
 using Models.Events;
 using Services.Events.Processors;
 
-namespace Services.Events.Handlers.Base
+namespace Services.Events.Handlers
 {
-    public class BaseEventHandler : ISlackEventHandler
+    public interface ISlackEventHandler
     {
-        private readonly SlackEventType _slackEventType;
+        Task HandleSlackEventAsync(
+            SlackEventType slackEventType,
+            SlackEventBody slackEventBody,
+            CancellationToken cancellationToken);
+    }
+    
+    public class SlackEventHandler : ISlackEventHandler
+    {
         private readonly IEventProcessorProvider _eventProcessorProvider;
 
-        protected BaseEventHandler(
-            SlackEventType slackEventType,
+        protected SlackEventHandler(
             IEventProcessorProvider eventProcessorProvider)
         {
-            _slackEventType = slackEventType;
             _eventProcessorProvider = eventProcessorProvider;
         }
 
-        public virtual async Task HandleSlackEventAsync(SlackEventBody slackEventBody, CancellationToken cancellationToken)
+        public virtual async Task HandleSlackEventAsync(
+            SlackEventType slackEventType, SlackEventBody slackEventBody, CancellationToken cancellationToken)
         {
             var eventsProcessors = _eventProcessorProvider.GetEventProcessors(
                 slackEventBody.TeamId, 
                 slackEventBody.Event.Channel,
-                _slackEventType);
+                slackEventType);
 
             await Task.WhenAll(
                 eventsProcessors.Select(

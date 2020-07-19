@@ -39,14 +39,9 @@ namespace Api
             services.AddHostedService<EventListenerBackgroundService>();
             services.AddHostedService<ProcessingConfigurationBackgroundService>();
 
-            services.AddSingleton<ISlackEventHandlerRouter ,SlackEventHandlerRouter>();
+            services.AddSingleton<ISlackEventHandler, SlackEventHandler>();
             services.AddSingleton<ISlackEventIdentifier, SlackEventIdentifier>();
 
-            services.AddSingleton<ChannelMessageEventHandler>();
-            services.AddSingleton<ThreadMessageEventHandler>();
-            services.AddSingleton<ChannelJoinEventHandler>();
-            services.AddSingleton<AppMentionEventHandler>();
-            services.AddSingleton<ReactionAddedEventHandler>();
             services.AddSingleton<IEventProcessorProvider, EventProcessorProvider>();
             services.AddSingleton<IProcessingConfigurationStorage, FileProcessingStorage>();
             

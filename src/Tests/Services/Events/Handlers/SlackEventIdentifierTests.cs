@@ -25,13 +25,13 @@ namespace Tests.Services.Events.Handlers
         {
             var slackBody = GetSlackEventBody(inputEvent);
 
-            var slackRouterMock = new Mock<ISlackEventHandlerRouter>();
+            var slackRouterMock = new Mock<ISlackEventHandler>();
             
             var slackEventIdentifier = new SlackEventIdentifier(slackRouterMock.Object);
 
             await slackEventIdentifier.IdentifySlackEventAsync(slackBody.Body, CancellationToken.None);
 
-            slackRouterMock.Verify(x => x.RouteSlackEventAsync(It.Is<SlackEventType>(
+            slackRouterMock.Verify(x => x.HandleSlackEventAsync(It.Is<SlackEventType>(
                 type =>  type == expectedEvent), slackBody.Body, CancellationToken.None), Times.Once);
         }
 
