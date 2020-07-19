@@ -7,13 +7,17 @@ namespace Models.Events
     [JsonConverter(typeof(StringEnumConverter))]
     public enum SlackEventType
     {
-        [EnumMember(Value = "Message")] 
+        [EnumMember(Value = nameof(Unknown))] 
+        Unknown,
+        [EnumMember(Value = nameof(Message))] 
         Message,
-        [EnumMember(Value = "UserJoined")]
-        UserJoined,
-        [EnumMember(Value = "AppMention")]
+        [EnumMember(Value = nameof(ThreadMessage))] 
+        ThreadMessage,
+        [EnumMember(Value = nameof(ChannelJoin))]
+        ChannelJoin,
+        [EnumMember(Value = nameof(AppMention))]
         AppMention,
-        [EnumMember(Value = "ReactionAdded")]
+        [EnumMember(Value = nameof(ReactionAdded))]
         ReactionAdded
     }
 }

@@ -1,49 +1,52 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Models.Api;
+using Models.Events;
 
 namespace Services.Events.Handlers
 {
-    public class SlackEventHandler : ISlackEventHandler
+    public interface ISlackEventHandlerRouter
     {
-        private readonly UserJoinedEventHandler _userJoinedEventHandler;
+        Task RouteSlackEventAsync(
+            SlackEventType eventType,
+            SlackEventBody slackEventBody,
+            CancellationToken cancellationToken);
+    }
+
+    public class SlackEventHandlerRouter : ISlackEventHandlerRouter
+    {
+        private readonly ChannelJoinEventHandler _channelJoinEventHandler;
         private readonly ChannelMessageEventHandler _channelMessageEventHandler;
         private readonly ThreadMessageEventHandler _threadMessageEventHandler;
         private readonly AppMentionEventHandler _appMentionEventHandler;
         private readonly ReactionAddedEventHandler _reactionAddedEventHandler;
 
-        public SlackEventHandler(
-            UserJoinedEventHandler userJoinedEventHandler,
+        public SlackEventHandlerRouter(
+            ChannelJoinEventHandler channelJoinEventHandler,
             ChannelMessageEventHandler channelMessageEventHandler,
             ThreadMessageEventHandler threadMessageEventHandler,
             AppMentionEventHandler appMentionEventHandler,
             ReactionAddedEventHandler reactionAddedEventHandler)
         {
-            _userJoinedEventHandler = userJoinedEventHandler;
+            _channelJoinEventHandler = channelJoinEventHandler;
             _channelMessageEventHandler = channelMessageEventHandler;
             _threadMessageEventHandler = threadMessageEventHandler;
             _appMentionEventHandler = appMentionEventHandler;
             _reactionAddedEventHandler = reactionAddedEventHandler;
         }
 
-        public Task HandleSlackEventAsync(
+        public Task RouteSlackEventAsync(
+            SlackEventType eventType,
             SlackEventBody slackEventBody,
             CancellationToken cancellationToken)
         {
-            return slackEventBody switch
+            return eventType switch
             {
-                { Event: {Type: "message", Subtype: "channel_join"} } 
-                    => _userJoinedEventHandler.HandleSlackEventAsync(slackEventBody, cancellationToken),
-                { Event: {Type: "message", ParentUserId: null, ThreadParentMessageIdentifier: null} } 
-                    => _channelMessageEventHandler.HandleSlackEventAsync(slackEventBody, cancellationToken),
-                { Event: {Type: "message"} } 
-                    when slackEventBody.Event.ThreadParentMessageIdentifier.HasValue 
-                         && !string.IsNullOrEmpty(slackEventBody.Event.ParentUserId) 
-                    => _threadMessageEventHandler.HandleSlackEventAsync(slackEventBody, cancellationToken),
-                { Event: {Type: "app_mention"} } 
-                    => _appMentionEventHandler.HandleSlackEventAsync(slackEventBody, cancellationToken),
-                { Event: {Type: "reaction_added"} } 
-                    => _reactionAddedEventHandler.HandleSlackEventAsync(slackEventBody, cancellationToken),
+                SlackEventType.ChannelJoin => _channelJoinEventHandler.HandleSlackEventAsync(slackEventBody, cancellationToken),
+                SlackEventType.Message => _channelMessageEventHandler.HandleSlackEventAsync(slackEventBody, cancellationToken),
+                SlackEventType.ThreadMessage => _threadMessageEventHandler.HandleSlackEventAsync(slackEventBody, cancellationToken),
+                SlackEventType.AppMention => _appMentionEventHandler.HandleSlackEventAsync(slackEventBody, cancellationToken),
+                SlackEventType.ReactionAdded => _reactionAddedEventHandler.HandleSlackEventAsync(slackEventBody, cancellationToken),
                 _ => UnknownEvent(slackEventBody, cancellationToken)
             };
         }

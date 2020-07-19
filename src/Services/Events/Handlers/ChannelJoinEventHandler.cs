@@ -4,12 +4,12 @@ using Services.Events.Processors;
 
 namespace Services.Events.Handlers
 {
-    public class UserJoinedEventHandler : BaseEventHandler
+    public class ChannelJoinEventHandler : BaseEventHandler
     {
-        public UserJoinedEventHandler(
+        public ChannelJoinEventHandler(
             IEventProcessorProvider eventProcessorProvider)
             : base(
-                SlackEventType.UserJoined,
+                SlackEventType.ChannelJoin,
                 eventProcessorProvider)
         {
         }

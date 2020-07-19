@@ -11,14 +11,14 @@ namespace Services.BackgroundServices
     public class EventListenerBackgroundService : BackgroundService
     {
         private readonly EventStorage _eventStorage;
-        private readonly SlackEventHandler _slackEventHandler;
+        private readonly ISlackEventIdentifier _slackEventIdentifier;
 
         public EventListenerBackgroundService(
             EventStorage eventStorage,
-            SlackEventHandler slackEventHandler)
+            ISlackEventIdentifier slackEventIdentifier)
         {
             _eventStorage = eventStorage;
-            _slackEventHandler = slackEventHandler;
+            _slackEventIdentifier = slackEventIdentifier;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -41,7 +41,7 @@ namespace Services.BackgroundServices
             SemaphoreSlim semaphoreSlim,
             CancellationToken cancellationToken)
         {
-            await _slackEventHandler.HandleSlackEventAsync(slackEventBody, cancellationToken);
+            await _slackEventIdentifier.IdentifySlackEventAsync(slackEventBody, cancellationToken);
             semaphoreSlim.Release();
         }
     }

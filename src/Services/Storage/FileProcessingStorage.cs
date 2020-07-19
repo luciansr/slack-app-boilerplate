@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -12,10 +13,9 @@ namespace Services.Storage
         public Task<SlackProcessingConfiguration> GetEventProcessingConfigurationAsync(
             CancellationToken cancellationToken)
         {
-            var allLines = File.ReadAllLines("./ExampleConfig/slack-bot-config.json");
-            return Task.FromResult(
-                JsonConvert.DeserializeObject<SlackProcessingConfiguration>(
-                    string.Join(string.Empty, allLines)));
+            var allLines = string.Join(Environment.NewLine, File.ReadAllLines("./ExampleConfig/slack-bot-config.json"));
+
+            return Task.FromResult(JsonConvert.DeserializeObject<SlackProcessingConfiguration>(allLines));
         }
     }
 }

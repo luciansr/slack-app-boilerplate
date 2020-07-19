@@ -8,9 +8,50 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+        <PackageReference Include="Moq" Version="4.14.5" />
         <PackageReference Include="xunit" Version="2.4.0" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.0" />
         <PackageReference Include="coverlet.collector" Version="1.2.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Models\Models.csproj" />
+      <ProjectReference Include="..\Services\Services.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="SlackInputs\AppMention.json" />
+      <Content Include="SlackInputs\AppMention.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="SlackInputs\MessageOnPrivateChannel.json" />
+      <Content Include="SlackInputs\MessageOnPrivateChannel.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="SlackInputs\MessageOnPublicChannel.json" />
+      <Content Include="SlackInputs\MessageOnPublicChannel.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="SlackInputs\MessageWithLinkInsideThread.json" />
+      <Content Include="SlackInputs\MessageWithLinkInsideThread.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="SlackInputs\MessageWithLinkOnPrivateChannel.json" />
+      <Content Include="SlackInputs\MessageWithLinkOnPrivateChannel.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="SlackInputs\ReactionAddedOnChannelMessage.json" />
+      <Content Include="SlackInputs\ReactionAddedOnChannelMessage.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="SlackInputs\ThreadMessage.json" />
+      <Content Include="SlackInputs\ThreadMessage.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <None Remove="SlackInputs\UserJoinedChannel.json" />
+      <Content Include="SlackInputs\UserJoinedChannel.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>
