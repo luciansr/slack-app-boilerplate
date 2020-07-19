@@ -2,7 +2,7 @@
   "teamConfigurations": {
     "TKVHCH21L": {
       "channelConfigurations": {
-        "CKTDE9BHB": {
+        "*": {
           "eventConfigurations": {
             "Message": [
               {

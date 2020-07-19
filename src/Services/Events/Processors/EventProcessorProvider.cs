@@ -50,7 +50,7 @@ namespace Services.Events.Processors
 
             if (eventProcessors.ChannelConfigurations.TryGetValue("*", out var genericEventProcessors))
             {
-                if (ownEventProcessors != null)
+                if (genericEventProcessors != null)
                 {
                     result = result.Concat(GetEventProcessorsForSlackEventType(slackEventType, genericEventProcessors)).ToArray();
                 }
@@ -78,7 +78,7 @@ namespace Services.Events.Processors
 
             if (eventProcessors.EventConfigurations.TryGetValue("*", out var genericEventProcessors))
             {
-                if (ownEventProcessors != null)
+                if (genericEventProcessors != null)
                 {
                     result = result.Concat(genericEventProcessors).ToArray();
                 }
